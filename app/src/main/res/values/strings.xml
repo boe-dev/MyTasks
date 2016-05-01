@@ -9,4 +9,5 @@
     <string name="task_name">Task name</string>
     <string name="address">Address</string>
     <string name="material_name">Material name</string>
+    <string name="create_account">CREATE ACCOUNT</string>
 </resources>
