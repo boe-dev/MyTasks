@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent"
+    android:padding="@dimen/activity_horizontal_margin">
+
+
+    <Spinner
+        android:id="@+id/sub_task_or_material_spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <EditText
+        android:id="@+id/sub_task_or_material_desc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/material_name"
+        android:imeOptions="actionDone|flagNoExtractUi"
+        android:inputType="textCapWords"/>
+
+
+</LinearLayout>

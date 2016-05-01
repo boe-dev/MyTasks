@@ -69,6 +69,8 @@
             android:id="@+id/login_sign_up"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/text_margin"
+            android:layout_marginLeft="@dimen/text_margin"
             android:textStyle="bold"
             android:text="@string/sign_up"/>
 

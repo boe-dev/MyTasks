@@ -6,4 +6,7 @@
     <string name="sign_in">SIGN IN</string>
     <string name="dont_have_accoount">Don\'t have an account?</string>
     <string name="sign_up">Sign Up</string>
+    <string name="task_name">Task name</string>
+    <string name="address">Address</string>
+    <string name="material_name">Material name</string>
 </resources>
