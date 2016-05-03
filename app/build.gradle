@@ -30,4 +30,7 @@ dependencies {
     /* For Google Play Service */
     compile 'com.google.android.gms:play-services-safetynet:8.3.0'
     compile 'com.google.android.gms:play-services-auth:8.3.0'
+
+    /* Butterknife */
+    compile 'com.jakewharton:butterknife:8.0.1'
 }
