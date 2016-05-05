@@ -2,6 +2,7 @@ package de.boe_dev.mytasks.ui;
 
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -10,12 +11,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.firebase.client.Firebase;
 
 import butterknife.ButterKnife;
 import de.boe_dev.mytasks.R;
 import de.boe_dev.mytasks.ui.materials.MaterialsFragment;
+import de.boe_dev.mytasks.ui.tasks.AddTaskDialogFragment;
 import de.boe_dev.mytasks.ui.tasks.TasksFragment;
 
 public class MainActivity extends AppCompatActivity {
@@ -75,6 +78,11 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setAdapter(adapter);
 
         tabLayout.setupWithViewPager(viewPager);
+    }
+
+    public void showAddTaskDialog(View view) {
+        DialogFragment dialog = AddTaskDialogFragment.newInstance();
+        dialog.show(MainActivity.this.getSupportFragmentManager(), "AddTaskDialogFragment");
     }
 
     public class SectionPagerAdapter extends FragmentStatePagerAdapter {

@@ -11,6 +11,8 @@ public class Constants {
     public static final String FIREBASE_LOCATION_SUBTASKS = "subTasks";
     public static final String FIREBASE_LOCATION_MATERIALS = "materials";
 
+    public static final String FIREBASE_PROPERTY_TIMESTAMP = "timestamp";
+
     public static final String FIREBASE_URL = BuildConfig.UNIQUE_FIREBASE_ROOT_URL;
     public static final String FIREBASE_URL_TASKS = FIREBASE_URL + "/" + FIREBASE_LOCATION_TASKS;
     public static final String FIREBASE_URL_SUBTASKS = FIREBASE_URL + "/" + FIREBASE_LOCATION_SUBTASKS;

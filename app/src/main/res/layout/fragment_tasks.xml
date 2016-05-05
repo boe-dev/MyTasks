@@ -22,6 +22,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
+        android:onClick="showAddTaskDialog"
+        android:src="@drawable/icon_add"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true" />
 
