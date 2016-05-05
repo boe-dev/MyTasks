@@ -8,4 +8,5 @@
     <dimen name="normal_bottom_margin">16dp</dimen>
     <dimen name="big_bottom_margin">37dp</dimen>
     <dimen name="text_margin">4dp</dimen>
+    <dimen name="lists_row_height">70dp</dimen>
 </resources>

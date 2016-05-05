@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/lists_row_height"
+    android:layout_margin="2dp"
+    android:descendantFocusability="blocksDescendants"
+    android:gravity="center_vertical"
+    android:paddingLeft="@dimen/activity_vertical_margin"
+    android:paddingStart="@dimen/activity_vertical_margin">
+
+    <TextView
+        android:id="@+id/item_task_list_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="2dp"/>
+
+    <TextView
+        android:id="@+id/created_by"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/item_task_list_name"
+        android:layout_marginEnd="4dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginTop="2dp"
+        android:text="@string/created_by"/>
+
+    <TextView
+        android:id="@+id/item_task_created_by_user"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/item_task_list_name"
+        android:layout_marginTop="2dp"
+        android:layout_toEndOf="@+id/created_by"
+        android:layout_toRightOf="@+id/created_by"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/item_task_edit_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/item_task_list_name"
+        android:layout_marginEnd="4dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginTop="2dp"/>
+
+</RelativeLayout>
