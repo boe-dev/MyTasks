@@ -19,6 +19,17 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    buildTypes.each {
+        it.buildConfigField 'String', 'UNIQUE_FIREBASE_ROOT_URL', UniqueFirebaseRootUrl
+    }
+
+    packagingOptions {
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE-FIREBASE.txt'
+        exclude 'META-INF/NOTICE'
+    }
+
 }
 
 dependencies {
@@ -33,4 +44,8 @@ dependencies {
 
     /* Butterknife */
     compile 'com.jakewharton:butterknife:8.0.1'
+
+    /* Firebase */
+    compile 'com.firebase:firebase-client-android:2.4.0'
+    compile 'com.firebaseui:firebase-ui:0.2.2'
 }

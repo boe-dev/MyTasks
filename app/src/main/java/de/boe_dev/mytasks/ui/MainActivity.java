@@ -11,6 +11,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.firebase.client.Firebase;
+
 import butterknife.ButterKnife;
 import de.boe_dev.mytasks.R;
 import de.boe_dev.mytasks.ui.materials.MaterialsFragment;
@@ -23,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        Firebase.setAndroidContext(this);
         initViews();
 
 //        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
