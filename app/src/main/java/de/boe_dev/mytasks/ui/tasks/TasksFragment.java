@@ -1,17 +1,20 @@
 package de.boe_dev.mytasks.ui.tasks;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.firebase.client.Firebase;
 
 import de.boe_dev.mytasks.R;
 import de.boe_dev.mytasks.ui.model.Task;
+import de.boe_dev.mytasks.ui.taskDetail.TaskDetailActivity;
 import de.boe_dev.mytasks.ui.utils.Constants;
 
 /**
@@ -29,9 +32,16 @@ public class TasksFragment extends Fragment {
         return fragment;
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+        }
+    }
+
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(final LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_tasks, container, false);
         mListView = (ListView) rootView.findViewById(R.id.list_view_tasks);
 
@@ -39,6 +49,26 @@ public class TasksFragment extends Fragment {
 
         mTasksAdapter = new TasksAdapter(getActivity(), Task.class, R.layout.item_tasks, ref);
         mListView.setAdapter(mTasksAdapter);
+
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Task taskList = mTasksAdapter.getItem(position);
+                if (taskList != null) {
+                    Intent intent = new Intent(getActivity(), TaskDetailActivity.class);
+                    String listId = mTasksAdapter.getRef(position).getKey();
+                    intent.putExtra(Constants.KEY_LIST_ID, listId);
+                    startActivity(intent);
+                }
+            }
+        });
+
         return rootView;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mTasksAdapter.cleanup();
     }
 }

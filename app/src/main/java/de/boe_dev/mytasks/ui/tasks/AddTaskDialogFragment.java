@@ -17,8 +17,6 @@ import com.firebase.client.ServerValue;
 
 import java.util.HashMap;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import de.boe_dev.mytasks.R;
 import de.boe_dev.mytasks.ui.model.Task;
 import de.boe_dev.mytasks.ui.utils.Constants;

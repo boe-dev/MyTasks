@@ -29,6 +29,8 @@
         app:pressedTranslationZ="12dp"
         app:borderWidth="0dp"
         android:id="@+id/new_task_fab"
+        android:onClick="showAddTaskOrMaterialDialog"
+        android:src="@drawable/icon_add"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"

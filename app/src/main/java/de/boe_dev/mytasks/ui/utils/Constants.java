@@ -18,5 +18,7 @@ public class Constants {
     public static final String FIREBASE_URL_SUBTASKS = FIREBASE_URL + "/" + FIREBASE_LOCATION_SUBTASKS;
     public static final String FIREBASE_URL_MATERIALS = FIREBASE_URL + "/" + FIREBASE_LOCATION_MATERIALS;
 
+    public static final String KEY_LIST_ID = "LIST_ID";
+
 
 }
