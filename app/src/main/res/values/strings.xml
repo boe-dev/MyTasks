@@ -12,4 +12,6 @@
     <string name="create_account">CREATE ACCOUNT</string>
     <string name="created_by">Created by</string>
     <string name="positiv_button_create">CREATE</string>
+    <string name="positiv_button_add_item">Add item</string>
+    <string name="negative_button_cancel">CANCEL</string>
 </resources>

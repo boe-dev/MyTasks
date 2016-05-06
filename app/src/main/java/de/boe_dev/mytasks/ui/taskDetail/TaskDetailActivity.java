@@ -3,11 +3,12 @@ package de.boe_dev.mytasks.ui.taskDetail;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import de.boe_dev.mytasks.R;
-import de.boe_dev.mytasks.ui.utils.Constants;
+import utils.Constants;
 
 /**
  * Created by ben on 05.05.16.
@@ -30,7 +31,8 @@ public class TaskDetailActivity extends AppCompatActivity {
     }
 
     public void showAddTaskOrMaterialDialog(View view) {
-
+        DialogFragment dialog = AddTaskOrMaterialDialog.newInstance(mTaskId);
+        dialog.show(this.getSupportFragmentManager(), "AddTaskOrMaterialDialog");
     }
 
 }

@@ -1,10 +1,26 @@
 package de.boe_dev.mytasks.ui.taskDetail;
 
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
+import android.support.v7.app.AlertDialog;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.Spinner;
 
-import de.boe_dev.mytasks.ui.model.Task;
-import de.boe_dev.mytasks.ui.tasks.AddTaskDialogFragment;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.firebase.client.Firebase;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import de.boe_dev.mytasks.R;
+import model.SubTaskOrMaterial;
+import model.Task;
+import utils.Constants;
 
 /**
  * Created by ben on 05.05.16.
@@ -16,7 +32,7 @@ public class AddTaskOrMaterialDialog extends DialogFragment {
     private Spinner spinner;
     private EditText nameText;
 
-    public static AddTaskOrMaterialDialog newInstance(Task task, String listId) {
+    public static AddTaskOrMaterialDialog newInstance(String listId) {
 
         AddTaskOrMaterialDialog addTaskOrMaterialDialog = new AddTaskOrMaterialDialog();
         Bundle bundle = new Bundle();
@@ -32,18 +48,20 @@ public class AddTaskOrMaterialDialog extends DialogFragment {
         mListId = getArguments().getString(Constants.KEY_LIST_ID);
         mResource = getArguments().getInt(Constants.KEY_LAYOUT_RESOURCE);
     }
-    
+
+    @NonNull
+    @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Use the Builder class for convenient dialog construction
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.CustomTheme_Dialog);
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View rootView = inflater.inflate(mResource, null);
-        spinner = (Spinner) rootView.frindViewById(R.id.sub_task_or_material_spinner);
-        nameText = (EditText) rootView.frindViewById(R.id.sub_task_or_material_desc);
-        
-         builder.setView(rootView)
+        spinner = (Spinner) rootView.findViewById(R.id.sub_task_or_material_spinner);
+        nameText = (EditText) rootView.findViewById(R.id.sub_task_or_material_desc);
+
+        builder.setView(rootView)
                 /* Add action buttons */
-                .setPositiveButton(R.string.negative_button_add_item, new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.positiv_button_add_item, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
                         addSubTaskOrMaterial();
@@ -56,19 +74,29 @@ public class AddTaskOrMaterialDialog extends DialogFragment {
                         AddTaskOrMaterialDialog.this.getDialog().cancel();
                     }
                 });
-        
+
         return builder.create();
     }
-    
+
     private void addSubTaskOrMaterial() {
         if(!nameText.equals("")) {
             Firebase firebaseRef = new Firebase(Constants.FIREBASE_URL);
-            Firebase itemsRef = new Firebase(Constants.FIREBASE_URL_SUB_TASKS).child(mListId);
+            Firebase itemsRef = new Firebase(Constants.FIREBASE_URL_SUBTASKS).child(mListId);
+
+            HashMap<String, Object> updatedIteimToAddMap = new HashMap<>();
             
             Firebase newRef = itemsRef.push();
             String itemId = newRef.getKey();
-            
-            //TODO add db save here
+
+            SubTaskOrMaterial subTaskOrMaterial = new SubTaskOrMaterial("Test", true);
+            HashMap<String, Object> itemToAdd =
+                    (HashMap<String, Object>) new ObjectMapper().convertValue(subTaskOrMaterial, Map.class);
+
+            updatedIteimToAddMap.put("/" + Constants.FIREBASE_LOCATION_SUBTASKS + "/" +
+                    mListId + "/" + itemId, itemToAdd);
+
+            firebaseRef.updateChildren(updatedIteimToAddMap);
+            AddTaskOrMaterialDialog.this.getDialog().cancel();
         }
     }
 

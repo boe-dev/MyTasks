@@ -1,4 +1,4 @@
-package de.boe_dev.mytasks.ui.model;
+package model;
 
 /**
  * Created by ben on 05.05.16.

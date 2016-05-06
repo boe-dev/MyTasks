@@ -1,4 +1,4 @@
-package de.boe_dev.mytasks.ui.model;
+package model;
 
 import java.util.HashMap;
 

@@ -1,4 +1,4 @@
-package de.boe_dev.mytasks.ui.utils;
+package utils;
 
 import de.boe_dev.mytasks.BuildConfig;
 
@@ -19,6 +19,7 @@ public class Constants {
     public static final String FIREBASE_URL_MATERIALS = FIREBASE_URL + "/" + FIREBASE_LOCATION_MATERIALS;
 
     public static final String KEY_LIST_ID = "LIST_ID";
+    public static final String KEY_LAYOUT_RESOURCE = "LAYOUT_RESOURCE";
 
 
 }

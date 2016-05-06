@@ -7,10 +7,8 @@ import android.widget.TextView;
 import com.firebase.client.Query;
 import com.firebase.ui.FirebaseListAdapter;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import de.boe_dev.mytasks.R;
-import de.boe_dev.mytasks.ui.model.Task;
+import model.Task;
 
 /**
  * Created by ben on 05.05.16.

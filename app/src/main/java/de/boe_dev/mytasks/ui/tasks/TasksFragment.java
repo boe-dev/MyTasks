@@ -13,9 +13,9 @@ import android.widget.ListView;
 import com.firebase.client.Firebase;
 
 import de.boe_dev.mytasks.R;
-import de.boe_dev.mytasks.ui.model.Task;
+import model.Task;
 import de.boe_dev.mytasks.ui.taskDetail.TaskDetailActivity;
-import de.boe_dev.mytasks.ui.utils.Constants;
+import utils.Constants;
 
 /**
  * Created by benny on 03.05.16.

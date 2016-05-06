@@ -11,7 +11,7 @@ import com.firebase.ui.FirebaseListAdapter;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.boe_dev.mytasks.R;
-import de.boe_dev.mytasks.ui.model.Material;
+import model.Material;
 
 /**
  * Created by ben on 05.05.16.

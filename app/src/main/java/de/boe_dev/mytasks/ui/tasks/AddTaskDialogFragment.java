@@ -18,8 +18,8 @@ import com.firebase.client.ServerValue;
 import java.util.HashMap;
 
 import de.boe_dev.mytasks.R;
-import de.boe_dev.mytasks.ui.model.Task;
-import de.boe_dev.mytasks.ui.utils.Constants;
+import model.Task;
+import utils.Constants;
 
 /**
  * Created by ben on 05.05.16.

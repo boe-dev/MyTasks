@@ -10,11 +10,10 @@ import android.widget.ListView;
 
 import com.firebase.client.Firebase;
 
-import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.boe_dev.mytasks.R;
-import de.boe_dev.mytasks.ui.model.Material;
-import de.boe_dev.mytasks.ui.utils.Constants;
+import model.Material;
+import utils.Constants;
 
 /**
  * Created by benny on 03.05.16.
