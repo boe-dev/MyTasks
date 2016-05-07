@@ -6,15 +6,14 @@ package model;
 public class SubTaskOrMaterial {
 
     private String name;
-    private boolean isSubTask;
+    private boolean subTask;
 
     public SubTaskOrMaterial(){
-
     }
 
-    public SubTaskOrMaterial(String name, boolean isSubTask) {
+    public SubTaskOrMaterial(String name, boolean subTask) {
         this.name = name;
-        this.isSubTask = isSubTask;
+        this.subTask = subTask;
     }
 
     public String getName() {
@@ -22,6 +21,6 @@ public class SubTaskOrMaterial {
     }
 
     public boolean isSubTask() {
-        return isSubTask;
+        return subTask;
     }
 }

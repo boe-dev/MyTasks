@@ -12,7 +12,7 @@ import com.firebase.client.Firebase;
 
 import butterknife.ButterKnife;
 import de.boe_dev.mytasks.R;
-import model.Material;
+import model.SubTaskOrMaterial;
 import utils.Constants;
 
 /**
@@ -40,10 +40,10 @@ public class MaterialsFragment extends Fragment {
         View rootview = inflater.inflate(R.layout.fragment_materials, container, false);
         ButterKnife.bind(getActivity());
 
-        Firebase ref = new Firebase(Constants.FIREBASE_URL_MATERIALS);
-        mMaterialAdapter = new MaterialsAdapter(getActivity(), Material.class, R.layout.item_materials, ref);
-        ListView materialList = (ListView) rootview.findViewById(R.id.list_view_materials);
-        materialList.setAdapter(mMaterialAdapter);
+//        Firebase ref = new Firebase(Constants.FIREBASE_URL_SUBTASKS);
+//        mMaterialAdapter = new MaterialsAdapter(getActivity(), SubTaskOrMaterial.class, R.layout.item_materials, ref);
+//        ListView materialList = (ListView) rootview.findViewById(R.id.list_view_materials);
+//        materialList.setAdapter(mMaterialAdapter);
 
         return rootview;
     }
@@ -51,6 +51,6 @@ public class MaterialsFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mMaterialAdapter.cleanup();
+//        mMaterialAdapter.cleanup();
     }
 }

@@ -88,7 +88,7 @@ public class AddTaskOrMaterialDialog extends DialogFragment {
             Firebase newRef = itemsRef.push();
             String itemId = newRef.getKey();
 
-            SubTaskOrMaterial subTaskOrMaterial = new SubTaskOrMaterial("Test", true);
+            SubTaskOrMaterial subTaskOrMaterial = new SubTaskOrMaterial(nameText.getText().toString(), true);
             HashMap<String, Object> itemToAdd =
                     (HashMap<String, Object>) new ObjectMapper().convertValue(subTaskOrMaterial, Map.class);
 
