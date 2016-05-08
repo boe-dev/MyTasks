@@ -15,6 +15,13 @@
     <string name="positiv_button_add_item">Add item</string>
     <string name="negative_button_cancel">CANCEL</string>
     <string name="sub_task_or_material">Sub task or Material</string>
+    <string name="progress_dialog_loading">Loading...</string>
+    <string name="progress_dialog_creating_user_with_firebase">Attempting to create account</string>
+    <string name="error_invalid_email_not_valid">%s is not a valid email</string>
+    <string name="error_invalid_password_not_valid">Please enter a password that is at least 6 characters long.</string>
+    <string name="error_password_does_not_match">Password does not match</string>
+    <string name="error_fill_all_fields">Fill all fields</string>
+    <string name="error_email_taken">The email is already taken.</string>
 
     <string-array name="task_spinner">
         <item>Sub Task</item>

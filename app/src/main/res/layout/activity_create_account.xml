@@ -63,6 +63,6 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/button_height"
         android:text="@string/create_account"
-        android:layout_marginBottom="@dimen/normal_bottom_margin"/>
+        android:layout_marginBottom="@dimen/normal_bottom_margin" />
 
 </LinearLayout>

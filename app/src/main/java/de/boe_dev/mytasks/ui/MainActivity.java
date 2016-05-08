@@ -28,7 +28,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        Firebase.setAndroidContext(this);
         initViews();
 
 //        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
