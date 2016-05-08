@@ -6,21 +6,27 @@ package model;
 public class SubTaskOrMaterial {
 
     private String name;
-    private boolean subTask;
+    private int type;
+    private boolean done;
 
     public SubTaskOrMaterial(){
     }
 
-    public SubTaskOrMaterial(String name, boolean subTask) {
+    public SubTaskOrMaterial(String name, int type, boolean done) {
         this.name = name;
-        this.subTask = subTask;
+        this.type = type;
+        this.done = done;
     }
 
     public String getName() {
         return name;
     }
 
-    public boolean isSubTask() {
-        return subTask;
+    public int getType() {
+        return type;
+    }
+
+    public boolean isDone() {
+        return done;
     }
 }

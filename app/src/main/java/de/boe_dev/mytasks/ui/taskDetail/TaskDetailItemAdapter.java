@@ -39,8 +39,10 @@ public class TaskDetailItemAdapter extends FirebaseListAdapter<SubTaskOrMaterial
         CheckBox checkBox = (CheckBox) view.findViewById(R.id.item_material_checkbox);
 
         subTaskOrMaterialName.setText(item.getName());
-        checkBox.setChecked(item.isSubTask());
 
-        // super.populateView(v, model, position);
+        if (item.getType() == 1) {
+            checkBox.setVisibility(View.INVISIBLE);
+        }
+
     }
 }

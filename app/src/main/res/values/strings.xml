@@ -14,4 +14,11 @@
     <string name="positiv_button_create">CREATE</string>
     <string name="positiv_button_add_item">Add item</string>
     <string name="negative_button_cancel">CANCEL</string>
+    <string name="sub_task_or_material">Sub task or Material</string>
+
+    <string-array name="task_spinner">
+        <item>Sub Task</item>
+        <item>Material</item>
+    </string-array>
+
 </resources>

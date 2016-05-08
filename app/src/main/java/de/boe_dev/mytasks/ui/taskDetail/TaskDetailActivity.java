@@ -10,8 +10,6 @@ import android.widget.ListView;
 
 import com.firebase.client.Firebase;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import de.boe_dev.mytasks.R;
 import model.SubTaskOrMaterial;
 import utils.Constants;
