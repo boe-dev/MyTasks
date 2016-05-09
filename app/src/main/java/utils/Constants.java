@@ -21,5 +21,7 @@ public class Constants {
     public static final String KEY_LIST_ID = "LIST_ID";
     public static final String KEY_LAYOUT_RESOURCE = "LAYOUT_RESOURCE";
 
+    public static final String PASSWORD_PROVIDER = "password";
+    public static final String GOOGLE_PROVIDER = "google";
 
 }
