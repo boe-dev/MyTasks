@@ -9,13 +9,16 @@ public class Task {
 
     private String listName, createdUser;
     private HashMap<String, Object> timestampLastChanged, timestampCreated;
+    double latitude, longitude;
 
     public Task(){
     }
 
-    public Task(String listName, String createdUser, HashMap<String, Object> timestampLastChanged) {
+    public Task(String listName, String createdUser, double latitude, double longitude, HashMap<String, Object> timestampLastChanged) {
         this.listName = listName;
         this.createdUser = createdUser;
+        this.latitude = latitude;
+        this.longitude = longitude;
         this.timestampCreated = timestampLastChanged;
     }
 
@@ -25,6 +28,14 @@ public class Task {
 
     public String getCreatedUser() {
         return createdUser;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
     }
 
     public HashMap<String, Object> getTimestampLastChanged() {

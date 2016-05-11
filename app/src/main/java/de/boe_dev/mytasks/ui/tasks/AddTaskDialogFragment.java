@@ -3,6 +3,8 @@ package de.boe_dev.mytasks.ui.tasks;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -15,7 +17,9 @@ import android.widget.EditText;
 import com.firebase.client.Firebase;
 import com.firebase.client.ServerValue;
 
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 
 import de.boe_dev.mytasks.R;
 import model.Task;
@@ -80,7 +84,27 @@ public class AddTaskDialogFragment extends DialogFragment {
             HashMap<String, Object> timestampCreated = new HashMap<>();
             timestampCreated.put(Constants.FIREBASE_PROPERTY_TIMESTAMP, ServerValue.TIMESTAMP);
 
-            Task task = new Task(userEnteredTaskName, createdUser, timestampCreated);
+            Geocoder geocoder = new Geocoder(getContext());
+            List<Address> addresses = null;
+
+            double latitude = 0.0;
+            double longitude = 0.0;
+
+
+            if (!taskAddress.equals("")) {
+                try {
+                    addresses = geocoder.getFromLocationName(taskAddress.getText().toString(), 1);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if (addresses.size() > 0) {
+                latitude = addresses.get(0).getLatitude();
+                longitude = addresses.get(0).getLongitude();
+            }
+
+            Task task = new Task(userEnteredTaskName, createdUser, latitude, longitude, timestampCreated);
 
             newListRef.setValue(task);
 
