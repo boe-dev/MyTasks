@@ -5,13 +5,18 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 
+import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 
 import de.boe_dev.mytasks.R;
 import model.SubTaskOrMaterial;
+import model.Task;
 import utils.Constants;
 
 /**
@@ -23,6 +28,7 @@ public class TaskDetailActivity extends AppCompatActivity {
     private TaskDetailItemAdapter mTaskDetailItemAdapter;
     private Firebase mRef;
     private String mTaskId;
+    private double latitude, longitude = 0.0;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -36,11 +42,27 @@ public class TaskDetailActivity extends AppCompatActivity {
         }
 
         mRef = new Firebase(Constants.FIREBASE_URL_TASKS).child(mTaskId);
+
+        mRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Task task = dataSnapshot.getValue(Task.class);
+                latitude = task.getLatitude();
+                longitude = task.getLongitude();
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });
+
         Firebase listItemsRfef = new Firebase(Constants.FIREBASE_URL_SUBTASKS).child(mTaskId);
 
         mTaskDetailItemAdapter = new TaskDetailItemAdapter(this, SubTaskOrMaterial.class, R.layout.item_materials, listItemsRfef, mTaskId);
         mListView = (ListView) findViewById(R.id.task_detail_list);
         mListView.setAdapter(mTaskDetailItemAdapter);
+
 
     }
 
@@ -48,5 +70,6 @@ public class TaskDetailActivity extends AppCompatActivity {
         DialogFragment dialog = AddTaskOrMaterialDialog.newInstance(mTaskId);
         dialog.show(this.getSupportFragmentManager(), "AddTaskOrMaterialDialog");
     }
+
 
 }
