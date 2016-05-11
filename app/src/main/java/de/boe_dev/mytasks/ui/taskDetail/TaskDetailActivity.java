@@ -13,6 +13,13 @@ import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.UiSettings;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import de.boe_dev.mytasks.R;
 import model.SubTaskOrMaterial;
@@ -22,9 +29,11 @@ import utils.Constants;
 /**
  * Created by ben on 05.05.16.
  */
-public class TaskDetailActivity extends AppCompatActivity {
+public class TaskDetailActivity extends AppCompatActivity implements OnMapReadyCallback{
 
     private ListView mListView;
+    private SupportMapFragment mapFragment;
+    private UiSettings uiSettings;
     private TaskDetailItemAdapter mTaskDetailItemAdapter;
     private Firebase mRef;
     private String mTaskId;
@@ -41,14 +50,20 @@ public class TaskDetailActivity extends AppCompatActivity {
             return;
         }
 
-        mRef = new Firebase(Constants.FIREBASE_URL_TASKS).child(mTaskId);
+        mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
 
+        mRef = new Firebase(Constants.FIREBASE_URL_TASKS).child(mTaskId);
         mRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Task task = dataSnapshot.getValue(Task.class);
                 latitude = task.getLatitude();
                 longitude = task.getLongitude();
+                if (latitude != 0.0 && longitude != 0.0) {
+                    mapFragment.getMapAsync(TaskDetailActivity.this);
+                } else {
+                    mapFragment.getView().setVisibility(View.GONE);
+                }
             }
 
             @Override
@@ -64,6 +79,9 @@ public class TaskDetailActivity extends AppCompatActivity {
         mListView.setAdapter(mTaskDetailItemAdapter);
 
 
+
+
+
     }
 
     public void showAddTaskOrMaterialDialog(View view) {
@@ -72,4 +90,12 @@ public class TaskDetailActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        uiSettings = googleMap.getUiSettings();
+        LatLng latLng = new LatLng(latitude, longitude);
+        googleMap.addMarker(new MarkerOptions().position(latLng));
+        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 12.0f));
+        uiSettings.setZoomControlsEnabled(true);
+    }
 }
