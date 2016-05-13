@@ -8,6 +8,7 @@ import android.widget.TextView;
 import com.firebase.client.Query;
 import com.firebase.ui.FirebaseListAdapter;
 
+import butterknife.BindView;
 import de.boe_dev.mytasks.R;
 import model.SubTaskOrMaterial;
 
@@ -19,7 +20,7 @@ public class TaskDetailItemAdapter extends FirebaseListAdapter<SubTaskOrMaterial
     private SubTaskOrMaterial subTaskOrMaterial;
     private String mListId;
 
-    TextView subTaskOrMaterialName;
+    @BindView(R.id.item_material_name) TextView subTaskOrMaterialName;
 
     public TaskDetailItemAdapter(Activity activity, Class<SubTaskOrMaterial> modelClass, int modelLayout, Query ref, String listId) {
         super(activity, modelClass, modelLayout, ref);
@@ -35,7 +36,6 @@ public class TaskDetailItemAdapter extends FirebaseListAdapter<SubTaskOrMaterial
     @Override
     protected void populateView(View view, SubTaskOrMaterial item) {
 
-        subTaskOrMaterialName = (TextView) view.findViewById(R.id.item_material_name);
         CheckBox checkBox = (CheckBox) view.findViewById(R.id.item_material_checkbox);
 
         subTaskOrMaterialName.setText(item.getName());
