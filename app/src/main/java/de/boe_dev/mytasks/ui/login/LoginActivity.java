@@ -182,9 +182,9 @@ public class LoginActivity extends AppCompatActivity implements
 
         } else {
             if (result.getStatus().getStatusCode() == GoogleSignInStatusCodes.SIGN_IN_CANCELLED) {
-                Toast.makeText(getApplicationContext(), "The sign in was cancelled. Make sure you're connected to the internet and try again.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), R.string.sign_in_cancled, Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(getApplicationContext(), "Error handling the sign in: " + result.getStatus().getStatusMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), R.string.error_handling_sign_in + result.getStatus().getStatusMessage(), Toast.LENGTH_SHORT).show();
             }
             mAuthProgressDialog.dismiss();
         }

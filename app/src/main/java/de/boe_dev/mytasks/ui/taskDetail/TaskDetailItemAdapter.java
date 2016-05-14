@@ -21,6 +21,7 @@ public class TaskDetailItemAdapter extends FirebaseListAdapter<SubTaskOrMaterial
     private String mListId;
 
     @BindView(R.id.item_material_name) TextView subTaskOrMaterialName;
+    @BindView(R.id.item_material_checkbox) CheckBox checkBox;
 
     public TaskDetailItemAdapter(Activity activity, Class<SubTaskOrMaterial> modelClass, int modelLayout, Query ref, String listId) {
         super(activity, modelClass, modelLayout, ref);
@@ -35,8 +36,6 @@ public class TaskDetailItemAdapter extends FirebaseListAdapter<SubTaskOrMaterial
 
     @Override
     protected void populateView(View view, SubTaskOrMaterial item) {
-
-        CheckBox checkBox = (CheckBox) view.findViewById(R.id.item_material_checkbox);
 
         subTaskOrMaterialName.setText(item.getName());
 
