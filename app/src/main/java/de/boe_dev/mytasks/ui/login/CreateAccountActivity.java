@@ -25,6 +25,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Optional;
 import de.boe_dev.mytasks.R;
+import model.User;
 import utils.Constants;
 
 /**
@@ -32,7 +33,7 @@ import utils.Constants;
  */
 public class CreateAccountActivity extends AppCompatActivity {
 
-    private EditText eMailText, passwordText, passwordCompareText;
+    private EditText eMailText, passwordText, passwordCompareText, nameText;
     private Button createAccount;
     private ProgressDialog mAuthProgressDialog;
 
@@ -44,6 +45,7 @@ public class CreateAccountActivity extends AppCompatActivity {
     }
 
     private void initViews() {
+        nameText = (EditText) findViewById(R.id.create_account_edit_text_name);
         eMailText = (EditText) findViewById(R.id.create_account_edit_text_mail);
         passwordText = (EditText) findViewById(R.id.create_account_edit_text_password);
         passwordCompareText = (EditText) findViewById(R.id.create_account_edit_text_compare_password);
@@ -58,7 +60,9 @@ public class CreateAccountActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if (!android.util.Patterns.EMAIL_ADDRESS.matcher(eMailText.getText().toString()).matches()) {
+                if (nameText.getText().toString().equals("")) {
+                    nameText.setError(getResources().getString(R.string.no_name_entered));
+                } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(eMailText.getText().toString()).matches()) {
 
                     eMailText.setError(String.format(getString(R.string.error_invalid_email_not_valid), eMailText.getText().toString()));
 
@@ -103,7 +107,13 @@ public class CreateAccountActivity extends AppCompatActivity {
 
     private void createUserInFirebaseHelper(String uid) {
 
-        // TODO create user here
+        Firebase ref = new Firebase(Constants.FIREBASE_URL_USERS).child(uid);
+
+        HashMap<String, Object> timestampJoined = new HashMap<>();
+        timestampJoined.put(Constants.FIREBASE_PROPERTY_TIMESTAMP, ServerValue.TIMESTAMP);
+
+        User user = new User(nameText.getText().toString(), eMailText.getText().toString(), timestampJoined);
+        ref.setValue(user);
 
     }
 

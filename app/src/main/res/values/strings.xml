@@ -32,6 +32,8 @@
     <string name="add_task_or_material_dialog">AddTaskOrMaterialDialog</string>
     <string name="error_handling_sign_in">Error handling the sign in:</string>
     <string name="sign_in_cancled">The sign in was cancelled. Make sure you\'re connected to the internet and try again.</string>
+    <string name="enter_name">Enter your name</string>
+    <string name="no_name_entered">No name entered</string>
 
     <string-array name="task_spinner">
         <item>Sub Task</item>

@@ -10,6 +10,7 @@ public class Constants {
     public static final String FIREBASE_LOCATION_TASKS = "taskList";
     public static final String FIREBASE_LOCATION_SUBTASKS = "subTasks";
     public static final String FIREBASE_LOCATION_MATERIALS = "materials";
+    public static final String FIREBASE_LOCATION_USERS = "users";
 
     public static final String FIREBASE_PROPERTY_TIMESTAMP = "timestamp";
 
@@ -17,6 +18,7 @@ public class Constants {
     public static final String FIREBASE_URL_TASKS = FIREBASE_URL + "/" + FIREBASE_LOCATION_TASKS;
     public static final String FIREBASE_URL_SUBTASKS = FIREBASE_URL + "/" + FIREBASE_LOCATION_SUBTASKS;
     public static final String FIREBASE_URL_MATERIALS = FIREBASE_URL + "/" + FIREBASE_LOCATION_MATERIALS;
+    public static final String FIREBASE_URL_USERS = FIREBASE_URL + "/" + FIREBASE_LOCATION_USERS;
 
     public static final String KEY_LIST_ID = "LIST_ID";
     public static final String KEY_LAYOUT_RESOURCE = "LAYOUT_RESOURCE";

@@ -32,7 +32,7 @@ import utils.Constants;
  */
 public class TaskDetailActivity extends AppCompatActivity implements OnMapReadyCallback{
 
-    @BindView(R.id.task_detail_list) private ListView mListView;
+    @BindView(R.id.task_detail_list) ListView mListView;
 
     private SupportMapFragment mapFragment;
     private UiSettings uiSettings;
