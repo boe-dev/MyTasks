@@ -35,6 +35,7 @@
     <string name="enter_name">Enter your name</string>
     <string name="no_name_entered">No name entered</string>
     <string name="logout">Logout</string>
+    <string name="progress_dialog_check_inbox">Check Inbox</string>
 
     <string-array name="task_spinner">
         <item>Sub Task</item>

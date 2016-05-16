@@ -25,10 +25,12 @@ public class Constants {
     public static final String KEY_ENCODED_EMAIL = "ENCODED_EMAIL";
     public static final String KEY_LIST_OWNDER = "LIST_OWNER";
     public static final String KEY_GOOGLE_EMAIL = "GOOGLE_EMAIL";
+    public static final String KEY_SIGNUP_EMAIL = "SIGNUP_EMAIL";
 
 
     public static final String PASSWORD_PROVIDER = "password";
     public static final String GOOGLE_PROVIDER = "google";
     public static final String PROVIDER_DATA_DISPLAY_NAME = "displayName";
+    public static final String FIREBASE_PROPERTY_USER_HAS_LOGGED_IN_WITH_PASSWORD = "hasLoggedInWithPassword";
 
 }

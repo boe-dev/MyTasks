@@ -163,6 +163,34 @@ public class LoginActivity extends BaseActivity{
         private void setAuthenticatedUserPasswordProvieder(AuthData authData) {
             final String unprocessedEmail = authData.getProviderData().get(Constants.FIREBASE_PROPERTY_EMAIL).toString().toLowerCase();
             mEncodedEmail = Utils.encodeEmail(unprocessedEmail);
+            final Firebase userRef = new Firebase(Constants.FIREBASE_URL_USERS).child(mEncodedEmail);
+            userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    User user = dataSnapshot.getValue(User.class);
+                    if (user != null) {
+                        if (!user.isHasLoggedInWithPassword()) {
+                            ref.changePassword(unprocessedEmail, password_edit_text.getText().toString(),
+                                    password_edit_text.getText().toString(), new Firebase.ResultHandler() {
+                                        @Override
+                                        public void onSuccess() {
+                                            userRef.child(Constants.FIREBASE_PROPERTY_USER_HAS_LOGGED_IN_WITH_PASSWORD).setValue(true);
+                                        }
+
+                                        @Override
+                                        public void onError(FirebaseError firebaseError) {
+                                            Log.d(LOG_TAG, firebaseError.getMessage());
+                                        }
+                                    });
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(FirebaseError firebaseError) {
+
+                }
+            });
         }
 
         private void setAuthenticatedUserGoogle(AuthData authData) {
@@ -279,4 +307,15 @@ public class LoginActivity extends BaseActivity{
         task.execute();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor spe = sp.edit();
+        String signupEmail = sp.getString(Constants.KEY_SIGNUP_EMAIL, null);
+        if (signupEmail != null) {
+            mail_edit_text.setText(signupEmail);
+            spe.putString(Constants.KEY_SIGNUP_EMAIL, null).apply();
+        }
+    }
 }
