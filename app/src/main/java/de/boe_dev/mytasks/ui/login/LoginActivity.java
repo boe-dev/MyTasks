@@ -13,8 +13,11 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.firebase.client.AuthData;
+import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
+import com.firebase.client.ServerValue;
+import com.firebase.client.ValueEventListener;
 import com.google.android.gms.auth.GoogleAuthException;
 import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.auth.UserRecoverableAuthException;
@@ -29,25 +32,26 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Scope;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import de.boe_dev.mytasks.R;
+import de.boe_dev.mytasks.ui.BaseActivity;
 import de.boe_dev.mytasks.ui.MainActivity;
+import model.User;
 import utils.Constants;
 
 /**
  * Created by benny on 03.05.16.
  */
-public class LoginActivity extends AppCompatActivity implements
-        GoogleApiClient.OnConnectionFailedListener{
+public class LoginActivity extends BaseActivity{
 
     private static final String LOG_TAG = "LoginActivity";
     private ProgressDialog mAuthProgressDialog;
     private Firebase ref;
     private GoogleSignInAccount mGoogleAccount;
-    private GoogleApiClient mGoogleApiClient;
     private boolean mGoogleIntentInProgress;
     public static final int RC_GOOGLE_LOGIN = 1;
 
@@ -60,16 +64,6 @@ public class LoginActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
         Firebase.setAndroidContext(this);
-
-
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestEmail()
-                .build();
-
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(LoginActivity.this, this /* OnConnectionFailedListener */)
-                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-                .build();
 
         ref = new Firebase(Constants.FIREBASE_URL);
         
@@ -104,10 +98,6 @@ public class LoginActivity extends AppCompatActivity implements
         ref.authWithOAuthToken(Constants.GOOGLE_PROVIDER, token, new MyAuthResultHandler(Constants.GOOGLE_PROVIDER));
     }
 
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-
-    }
 
     private class MyAuthResultHandler implements Firebase.AuthResultHandler {
 
@@ -127,8 +117,26 @@ public class LoginActivity extends AppCompatActivity implements
             Log.i(LOG_TAG, provider + " auth successful");
             if (authData != null) {
 
-                Log.v(LOG_TAG, "Uid " + authData.getUid());
-                Log.v(LOG_TAG, "email " + authData.getProviderData().get("email"));
+                final String mUserEmail = authData.getProviderData().get("email").toString().replace(".", ",");
+                final String mUserName = authData.getProviderData().get("displayName").toString();
+
+                final Firebase ref = new Firebase(Constants.FIREBASE_URL_USERS).child(mUserEmail);
+                ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.getValue() == null) {
+                            HashMap<String, Object> timestampJoined = new HashMap<>();
+                            timestampJoined.put(Constants.FIREBASE_PROPERTY_TIMESTAMP, ServerValue.TIMESTAMP);
+                            User user = new User(mUserName, mUserEmail, timestampJoined);
+                            ref.setValue(user);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(FirebaseError firebaseError) {
+                        Log.e(LOG_TAG, firebaseError.getMessage());
+                    }
+                });
 
                 /* Go to main activity */
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);

@@ -25,14 +25,16 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Optional;
 import de.boe_dev.mytasks.R;
+import de.boe_dev.mytasks.ui.BaseActivity;
 import model.User;
 import utils.Constants;
 
 /**
  * Created by benny on 03.05.16.
  */
-public class CreateAccountActivity extends AppCompatActivity {
+public class CreateAccountActivity extends BaseActivity {
 
+    private static final String LOG_TAG = "CreateAccountActivity";
     private EditText eMailText, passwordText, passwordCompareText, nameText;
     private Button createAccount;
     private ProgressDialog mAuthProgressDialog;
@@ -84,8 +86,7 @@ public class CreateAccountActivity extends AppCompatActivity {
                                 @Override
                                 public void onSuccess(Map<String, Object> stringObjectMap) {
                                     mAuthProgressDialog.dismiss();
-                                    String uid = (String) stringObjectMap.get("uid");
-                                    createUserInFirebaseHelper(uid);
+                                    createUserInFirebaseHelper();
                                 }
 
                                 @Override
@@ -105,15 +106,30 @@ public class CreateAccountActivity extends AppCompatActivity {
         });
     }
 
-    private void createUserInFirebaseHelper(String uid) {
+    private void createUserInFirebaseHelper() {
 
-        Firebase ref = new Firebase(Constants.FIREBASE_URL_USERS).child(uid);
+        final String mUserEmail = eMailText.getText().toString().replace(".", ",");
+        final Firebase ref = new Firebase(Constants.FIREBASE_URL_USERS).child(mUserEmail);
 
-        HashMap<String, Object> timestampJoined = new HashMap<>();
-        timestampJoined.put(Constants.FIREBASE_PROPERTY_TIMESTAMP, ServerValue.TIMESTAMP);
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getValue() == null) {
+                    HashMap<String, Object> timestampJoined = new HashMap<>();
+                    timestampJoined.put(Constants.FIREBASE_PROPERTY_TIMESTAMP, ServerValue.TIMESTAMP);
 
-        User user = new User(nameText.getText().toString(), eMailText.getText().toString(), timestampJoined);
-        ref.setValue(user);
+                    User user = new User(nameText.getText().toString(), mUserEmail, timestampJoined);
+                    ref.setValue(user);
+                }
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                Log.e(LOG_TAG, firebaseError.getMessage());
+            }
+        });
+
+
 
     }
 

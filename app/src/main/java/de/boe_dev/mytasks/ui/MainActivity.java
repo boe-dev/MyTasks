@@ -21,7 +21,7 @@ import de.boe_dev.mytasks.ui.materials.MaterialsFragment;
 import de.boe_dev.mytasks.ui.tasks.AddTaskDialogFragment;
 import de.boe_dev.mytasks.ui.tasks.TasksFragment;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
