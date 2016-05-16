@@ -21,8 +21,12 @@ import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.List;
+
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import de.boe_dev.mytasks.R;
+import de.boe_dev.mytasks.ui.BaseActivity;
 import model.SubTaskOrMaterial;
 import model.Task;
 import utils.Constants;
@@ -30,7 +34,7 @@ import utils.Constants;
 /**
  * Created by ben on 05.05.16.
  */
-public class TaskDetailActivity extends AppCompatActivity implements OnMapReadyCallback{
+public class TaskDetailActivity extends BaseActivity implements OnMapReadyCallback{
 
     @BindView(R.id.task_detail_list) ListView mListView;
 
@@ -45,6 +49,7 @@ public class TaskDetailActivity extends AppCompatActivity implements OnMapReadyC
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_task);
+        ButterKnife.bind(this);
         Intent intent = this.getIntent();
         mTaskId = intent.getStringExtra(Constants.KEY_LIST_ID);
         if (mTaskId == null) {

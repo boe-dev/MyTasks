@@ -31,10 +31,12 @@ import utils.Constants;
 public class AddTaskDialogFragment extends DialogFragment {
 
     private EditText taskName,taskAddress;
+    private String mEncodedEmail;
 
-    public static AddTaskDialogFragment newInstance() {
+    public static AddTaskDialogFragment newInstance(String encodedEmail) {
         AddTaskDialogFragment addTaskDialogFragment = new AddTaskDialogFragment();
         Bundle bundle = new Bundle();
+        bundle.putString(Constants.KEY_ENCODED_EMAIL, encodedEmail);
         addTaskDialogFragment.setArguments(bundle);
         return addTaskDialogFragment;
     }
@@ -42,6 +44,8 @@ public class AddTaskDialogFragment extends DialogFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mEncodedEmail = getArguments().getString(Constants.KEY_ENCODED_EMAIL);
+
     }
 
     @Override
@@ -74,7 +78,7 @@ public class AddTaskDialogFragment extends DialogFragment {
     public void addTask() {
 
         String userEnteredTaskName = taskName.getText().toString();
-        String createdUser = "Anonymous User";
+        String createdUser = mEncodedEmail;
 
         if (!userEnteredTaskName.equals("")) {
 
