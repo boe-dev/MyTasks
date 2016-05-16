@@ -34,6 +34,7 @@
     <string name="sign_in_cancled">The sign in was cancelled. Make sure you\'re connected to the internet and try again.</string>
     <string name="enter_name">Enter your name</string>
     <string name="no_name_entered">No name entered</string>
+    <string name="logout">Logout</string>
 
     <string-array name="task_spinner">
         <item>Sub Task</item>
