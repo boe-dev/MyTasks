@@ -40,16 +40,15 @@ import utils.Constants;
 /**
  * Created by benny on 03.05.16.
  */
-public class LoginActivity extends AppCompatActivity implements
-        GoogleApiClient.OnConnectionFailedListener{
+public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
     private static final String LOG_TAG = "LoginActivity";
     private ProgressDialog mAuthProgressDialog;
     private Firebase ref;
-    private GoogleSignInAccount mGoogleAccount;
     private GoogleApiClient mGoogleApiClient;
     private boolean mGoogleIntentInProgress;
     public static final int RC_GOOGLE_LOGIN = 1;
+    private GoogleSignInAccount mGoogleAccount;
 
     @BindView(R.id.login_edit_text_mail) EditText mail_edit_text;
     @BindView(R.id.login_edit_text_password) EditText password_edit_text;
@@ -60,19 +59,18 @@ public class LoginActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
         Firebase.setAndroidContext(this);
-
+        ref = new Firebase(Constants.FIREBASE_URL);
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .build();
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(LoginActivity.this, this /* OnConnectionFailedListener */)
+                .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
 
-        ref = new Firebase(Constants.FIREBASE_URL);
-        
+
         mAuthProgressDialog = new ProgressDialog(this);
         mAuthProgressDialog.setTitle(getString(R.string.progress_dialog_loading));
         mAuthProgressDialog.setMessage(getString(R.string.progress_dialog_authenticating_with_firebase));
@@ -99,16 +97,7 @@ public class LoginActivity extends AppCompatActivity implements
     public void signUp(View view){
         startActivity(new Intent(getApplicationContext(), CreateAccountActivity.class));
     }
-
-    private void loginWithGoogle(String token) {
-        ref.authWithOAuthToken(Constants.GOOGLE_PROVIDER, token, new MyAuthResultHandler(Constants.GOOGLE_PROVIDER));
-    }
-
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-
-    }
-
+    
     private class MyAuthResultHandler implements Firebase.AuthResultHandler {
 
         private final String provider;
@@ -159,7 +148,19 @@ public class LoginActivity extends AppCompatActivity implements
         }
     }
 
+    private void showErrorToast(String message) {
+        Toast.makeText(LoginActivity.this, message, Toast.LENGTH_LONG).show();
+    }
 
+    @Override
+    public void onConnectionFailed(ConnectionResult result) {
+        /**
+         * An unresolvable error has occurred and Google APIs (including Sign-In) will not
+         * be available.
+         */
+        mAuthProgressDialog.dismiss();
+        showErrorToast(result.toString());
+    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -182,9 +183,9 @@ public class LoginActivity extends AppCompatActivity implements
 
         } else {
             if (result.getStatus().getStatusCode() == GoogleSignInStatusCodes.SIGN_IN_CANCELLED) {
-                Toast.makeText(getApplicationContext(), "The sign in was cancelled. Make sure you're connected to the internet and try again.", Toast.LENGTH_SHORT).show();
+                showErrorToast("The sign in was cancelled. Make sure you're connected to the internet and try again.");
             } else {
-                Toast.makeText(getApplicationContext(), "Error handling the sign in: " + result.getStatus().getStatusMessage(), Toast.LENGTH_SHORT).show();
+                showErrorToast("Error handling the sign in: " + result.getStatus().getStatusMessage());
             }
             mAuthProgressDialog.dismiss();
         }
@@ -232,12 +233,12 @@ public class LoginActivity extends AppCompatActivity implements
                     /* Successfully got OAuth token, now login with Google */
                     loginWithGoogle(token);
                 } else if (mErrorMessage != null) {
-                    Toast.makeText(getApplicationContext(), mErrorMessage, Toast.LENGTH_SHORT).show();
+                    showErrorToast(mErrorMessage);
                 }
             }
         };
 
         task.execute();
     }
-
+    
 }
