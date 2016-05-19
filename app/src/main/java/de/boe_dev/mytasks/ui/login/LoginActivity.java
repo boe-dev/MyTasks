@@ -2,8 +2,10 @@ package de.boe_dev.mytasks.ui.login;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -13,8 +15,11 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.firebase.client.AuthData;
+import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
+import com.firebase.client.ServerValue;
+import com.firebase.client.ValueEventListener;
 import com.google.android.gms.auth.GoogleAuthException;
 import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.auth.UserRecoverableAuthException;
@@ -29,26 +34,29 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Scope;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import de.boe_dev.mytasks.R;
+import de.boe_dev.mytasks.ui.BaseActivity;
 import de.boe_dev.mytasks.ui.MainActivity;
+import model.User;
 import utils.Constants;
+import utils.Utils;
 
 /**
  * Created by benny on 03.05.16.
  */
-public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
+public class LoginActivity extends BaseActivity{
 
     private static final String LOG_TAG = "LoginActivity";
     private ProgressDialog mAuthProgressDialog;
     private Firebase ref;
-    private GoogleApiClient mGoogleApiClient;
+    private GoogleSignInAccount mGoogleAccount;
     private boolean mGoogleIntentInProgress;
     public static final int RC_GOOGLE_LOGIN = 1;
-    private GoogleSignInAccount mGoogleAccount;
 
     @BindView(R.id.login_edit_text_mail) EditText mail_edit_text;
     @BindView(R.id.login_edit_text_password) EditText password_edit_text;
@@ -59,18 +67,9 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
         Firebase.setAndroidContext(this);
+
         ref = new Firebase(Constants.FIREBASE_URL);
-
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestEmail()
-                .build();
-
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
-                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-                .build();
-
-
+        
         mAuthProgressDialog = new ProgressDialog(this);
         mAuthProgressDialog.setTitle(getString(R.string.progress_dialog_loading));
         mAuthProgressDialog.setMessage(getString(R.string.progress_dialog_authenticating_with_firebase));
@@ -97,7 +96,12 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     public void signUp(View view){
         startActivity(new Intent(getApplicationContext(), CreateAccountActivity.class));
     }
-    
+
+    private void loginWithGoogle(String token) {
+        ref.authWithOAuthToken(Constants.GOOGLE_PROVIDER, token, new MyAuthResultHandler(Constants.GOOGLE_PROVIDER));
+    }
+
+
     private class MyAuthResultHandler implements Firebase.AuthResultHandler {
 
         private final String provider;
@@ -116,8 +120,17 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             Log.i(LOG_TAG, provider + " auth successful");
             if (authData != null) {
 
-                Log.v(LOG_TAG, "Uid " + authData.getUid());
-                Log.v(LOG_TAG, "email " + authData.getProviderData().get("email"));
+                SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                SharedPreferences.Editor spe = sp.edit();
+
+                if (authData.getProvider().equals(Constants.PASSWORD_PROVIDER)) {
+                    setAuthenticatedUserPasswordProvieder(authData);
+                } else if (authData.getProvider().equals(Constants.GOOGLE_PROVIDER)) {
+                    setAuthenticatedUserGoogle(authData);
+                }
+
+                spe.putString(Constants.KEY_PROVIDER, authData.getProvider()).apply();
+                spe.putString(Constants.KEY_ENCODED_EMAIL, mEncodedEmail).apply();
 
                 /* Go to main activity */
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
@@ -146,20 +159,73 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                     Toast.makeText(LoginActivity.this, firebaseError.toString(), Toast.LENGTH_LONG).show();
             }
         }
-    }
 
-    private void showErrorToast(String message) {
-        Toast.makeText(LoginActivity.this, message, Toast.LENGTH_LONG).show();
-    }
+        private void setAuthenticatedUserPasswordProvieder(AuthData authData) {
+            final String unprocessedEmail = authData.getProviderData().get(Constants.FIREBASE_PROPERTY_EMAIL).toString().toLowerCase();
+            mEncodedEmail = Utils.encodeEmail(unprocessedEmail);
+            final Firebase userRef = new Firebase(Constants.FIREBASE_URL_USERS).child(mEncodedEmail);
+            userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    User user = dataSnapshot.getValue(User.class);
+                    if (user != null) {
+                        if (!user.isHasLoggedInWithPassword()) {
+                            ref.changePassword(unprocessedEmail, password_edit_text.getText().toString(),
+                                    password_edit_text.getText().toString(), new Firebase.ResultHandler() {
+                                        @Override
+                                        public void onSuccess() {
+                                            userRef.child(Constants.FIREBASE_PROPERTY_USER_HAS_LOGGED_IN_WITH_PASSWORD).setValue(true);
+                                        }
 
-    @Override
-    public void onConnectionFailed(ConnectionResult result) {
-        /**
-         * An unresolvable error has occurred and Google APIs (including Sign-In) will not
-         * be available.
-         */
-        mAuthProgressDialog.dismiss();
-        showErrorToast(result.toString());
+                                        @Override
+                                        public void onError(FirebaseError firebaseError) {
+                                            Log.d(LOG_TAG, firebaseError.getMessage());
+                                        }
+                                    });
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(FirebaseError firebaseError) {
+
+                }
+            });
+        }
+
+        private void setAuthenticatedUserGoogle(AuthData authData) {
+            SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+            SharedPreferences.Editor spe = sp.edit();
+            String unproceddedEmail;
+            if (mGoogleApiClient.isConnected()) {
+                unproceddedEmail = mGoogleAccount.getEmail().toLowerCase();
+                spe.putString(Constants.KEY_GOOGLE_EMAIL, unproceddedEmail).apply();
+            } else {
+                unproceddedEmail = sp.getString(Constants.KEY_GOOGLE_EMAIL, null);
+            }
+
+            mEncodedEmail = Utils.encodeEmail(unproceddedEmail);
+            final String userName = (String) authData.getProviderData().get(Constants.PROVIDER_DATA_DISPLAY_NAME);
+            final Firebase userLocation = new Firebase(Constants.FIREBASE_URL_USERS).child(mEncodedEmail);
+            userLocation.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.getValue() == null) {
+                        HashMap<String, Object> timestampJoined = new HashMap<>();
+                        timestampJoined.put(Constants.FIREBASE_PROPERTY_TIMESTAMP, ServerValue.TIMESTAMP);
+                        User user = new User(userName, mEncodedEmail, timestampJoined);
+                        userLocation.setValue(user);
+                    }
+                }
+
+                @Override
+                public void onCancelled(FirebaseError firebaseError) {
+                    Log.e(LOG_TAG, firebaseError.getMessage());
+                }
+            });
+
+        }
+
     }
 
     @Override
@@ -183,9 +249,9 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
         } else {
             if (result.getStatus().getStatusCode() == GoogleSignInStatusCodes.SIGN_IN_CANCELLED) {
-                showErrorToast("The sign in was cancelled. Make sure you're connected to the internet and try again.");
+                Toast.makeText(getApplicationContext(), R.string.sign_in_cancled, Toast.LENGTH_SHORT).show();
             } else {
-                showErrorToast("Error handling the sign in: " + result.getStatus().getStatusMessage());
+                Toast.makeText(getApplicationContext(), R.string.error_handling_sign_in + result.getStatus().getStatusMessage(), Toast.LENGTH_SHORT).show();
             }
             mAuthProgressDialog.dismiss();
         }
@@ -233,12 +299,23 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                     /* Successfully got OAuth token, now login with Google */
                     loginWithGoogle(token);
                 } else if (mErrorMessage != null) {
-                    showErrorToast(mErrorMessage);
+                    Toast.makeText(getApplicationContext(), mErrorMessage, Toast.LENGTH_SHORT).show();
                 }
             }
         };
 
         task.execute();
     }
-    
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor spe = sp.edit();
+        String signupEmail = sp.getString(Constants.KEY_SIGNUP_EMAIL, null);
+        if (signupEmail != null) {
+            mail_edit_text.setText(signupEmail);
+            spe.putString(Constants.KEY_SIGNUP_EMAIL, null).apply();
+        }
+    }
 }

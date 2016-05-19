@@ -21,7 +21,12 @@ import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import de.boe_dev.mytasks.R;
+import de.boe_dev.mytasks.ui.BaseActivity;
 import model.SubTaskOrMaterial;
 import model.Task;
 import utils.Constants;
@@ -29,9 +34,10 @@ import utils.Constants;
 /**
  * Created by ben on 05.05.16.
  */
-public class TaskDetailActivity extends AppCompatActivity implements OnMapReadyCallback{
+public class TaskDetailActivity extends BaseActivity implements OnMapReadyCallback{
 
-    private ListView mListView;
+    @BindView(R.id.task_detail_list) ListView mListView;
+
     private SupportMapFragment mapFragment;
     private UiSettings uiSettings;
     private TaskDetailItemAdapter mTaskDetailItemAdapter;
@@ -43,6 +49,7 @@ public class TaskDetailActivity extends AppCompatActivity implements OnMapReadyC
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_task);
+        ButterKnife.bind(this);
         Intent intent = this.getIntent();
         mTaskId = intent.getStringExtra(Constants.KEY_LIST_ID);
         if (mTaskId == null) {
@@ -75,7 +82,6 @@ public class TaskDetailActivity extends AppCompatActivity implements OnMapReadyC
         Firebase listItemsRfef = new Firebase(Constants.FIREBASE_URL_SUBTASKS).child(mTaskId);
 
         mTaskDetailItemAdapter = new TaskDetailItemAdapter(this, SubTaskOrMaterial.class, R.layout.item_materials, listItemsRfef, mTaskId);
-        mListView = (ListView) findViewById(R.id.task_detail_list);
         mListView.setAdapter(mTaskDetailItemAdapter);
 
 
@@ -86,7 +92,7 @@ public class TaskDetailActivity extends AppCompatActivity implements OnMapReadyC
 
     public void showAddTaskOrMaterialDialog(View view) {
         DialogFragment dialog = AddTaskOrMaterialDialog.newInstance(mTaskId);
-        dialog.show(this.getSupportFragmentManager(), "AddTaskOrMaterialDialog");
+        dialog.show(this.getSupportFragmentManager(), getApplicationContext().getResources().getString(R.string.add_task_or_material_dialog));
     }
 
 
