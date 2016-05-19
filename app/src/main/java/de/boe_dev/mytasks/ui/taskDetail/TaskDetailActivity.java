@@ -34,7 +34,7 @@ import utils.Constants;
 /**
  * Created by ben on 05.05.16.
  */
-public class TaskDetailActivity extends BaseActivity implements OnMapReadyCallback{
+public class TaskDetailActivity extends BaseActivity implements OnMapReadyCallback {
 
     @BindView(R.id.task_detail_list) ListView mListView;
 

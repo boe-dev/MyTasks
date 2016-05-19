@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -38,8 +39,9 @@ public class TaskDetailFragment extends Fragment implements OnMapReadyCallback {
 
     //@BindView(R.id.task_detail_list)
     ListView mListView;
+    FloatingActionButton fab;
 
-    private SupportMapFragment mapFragment;
+    //private SupportMapFragment mapFragment;
     private UiSettings uiSettings;
     private TaskDetailItemAdapter mTaskDetailItemAdapter;
     private Firebase mRef;
@@ -53,6 +55,7 @@ public class TaskDetailFragment extends Fragment implements OnMapReadyCallback {
         if (getArguments().containsKey(Constants.KEY_LIST_ID)) {
             mTaskId = getArguments().getString(Constants.KEY_LIST_ID);
         }
+        //mapFragment = (SupportMapFragment) this.getFragmentManager().findFragmentById(R.id.map);
     }
 
     @Nullable
@@ -61,8 +64,15 @@ public class TaskDetailFragment extends Fragment implements OnMapReadyCallback {
 
         View rootView = inflater.inflate(R.layout.activity_detail_task, container, false);
         ButterKnife.bind(getActivity());
-        mapFragment = (SupportMapFragment) getFragmentManager().findFragmentById(R.id.map);
+
         mListView = (ListView) rootView.findViewById(R.id.task_detail_list);
+        fab = (FloatingActionButton) rootView.findViewById(R.id.new_task_fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showAddTaskOrMaterialDialog(v);
+            }
+        });
 
         mRef = new Firebase(Constants.FIREBASE_URL_TASKS).child(mTaskId);
         mRef.addValueEventListener(new ValueEventListener() {
@@ -72,9 +82,9 @@ public class TaskDetailFragment extends Fragment implements OnMapReadyCallback {
                 latitude = task.getLatitude();
                 longitude = task.getLongitude();
                 if (latitude != 0.0 && longitude != 0.0) {
-                    mapFragment.getMapAsync(TaskDetailFragment.this);
+                    //mapFragment.getMapAsync(TaskDetailFragment.this);
                 } else {
-                    mapFragment.getView().setVisibility(View.GONE);
+                    //mapFragment.getView().setVisibility(View.GONE);
                 }
             }
 
