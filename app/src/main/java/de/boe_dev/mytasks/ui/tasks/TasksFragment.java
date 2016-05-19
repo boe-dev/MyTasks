@@ -4,19 +4,17 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
 
 import de.boe_dev.mytasks.R;
+import de.boe_dev.mytasks.ui.taskDetail.TaskDetailFragment;
 import model.Task;
 import de.boe_dev.mytasks.ui.taskDetail.TaskDetailActivity;
 import utils.Constants;
@@ -28,6 +26,7 @@ public class TasksFragment extends Fragment {
 
     private TasksAdapter mTasksAdapter;
     private ListView mListView;
+    private boolean mTwoPane;
 
     public static TasksFragment newInstance() {
         TasksFragment fragment = new TasksFragment();
@@ -46,8 +45,11 @@ public class TasksFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(final LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_tasks, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_tasks_list, container, false);
         mListView = (ListView) rootView.findViewById(R.id.list_view_tasks);
+        if (rootView.findViewById(R.id.task_detail_container) != null) {
+            mTwoPane = true;
+        }
 
         Firebase ref = new Firebase(Constants.FIREBASE_URL_TASKS);
 
@@ -59,10 +61,20 @@ public class TasksFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Task taskList = mTasksAdapter.getItem(position);
                 if (taskList != null) {
-                    Intent intent = new Intent(getActivity(), TaskDetailActivity.class);
                     String listId = mTasksAdapter.getRef(position).getKey();
-                    intent.putExtra(Constants.KEY_LIST_ID, listId);
-                    startActivity(intent);
+                    if (mTwoPane) {
+                        Bundle arguments = new Bundle();
+                        arguments.putString(Constants.KEY_LIST_ID, listId);
+                        TaskDetailFragment fragment = new TaskDetailFragment();
+                        fragment.setArguments(arguments);
+                        getFragmentManager().beginTransaction()
+                                .replace(R.id.task_detail_container, fragment)
+                                .commit();
+                    } else {
+                        Intent intent = new Intent(getActivity(), TaskDetailActivity.class);
+                        intent.putExtra(Constants.KEY_LIST_ID, listId);
+                        startActivity(intent);
+                    }
                 }
             }
         });
