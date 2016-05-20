@@ -21,7 +21,9 @@ import java.util.Map;
 
 import data.TaskContract;
 import data.TaskDbHelper;
+import data.TaskProvider;
 import de.boe_dev.mytasks.R;
+import de.boe_dev.mytasks.ui.materials.MaterialsFragment;
 import model.SubTaskOrMaterial;
 import utils.Constants;
 
@@ -84,33 +86,30 @@ public class AddTaskOrMaterialDialog extends DialogFragment {
     private void addSubTaskOrMaterial() {
         if(!nameText.equals("")) {
 
-            if (spinner.getSelectedItemPosition() ==  0) {
-                Firebase firebaseRef = new Firebase(Constants.FIREBASE_URL);
-                Firebase itemsRef = new Firebase(Constants.FIREBASE_URL_SUBTASKS).child(mListId);
+            Firebase firebaseRef = new Firebase(Constants.FIREBASE_URL);
+            Firebase itemsRef = new Firebase(Constants.FIREBASE_URL_SUBTASKS).child(mListId);
 
-                HashMap<String, Object> updatedIteimToAddMap = new HashMap<>();
+            HashMap<String, Object> updatedIteimToAddMap = new HashMap<>();
 
-                Firebase newRef = itemsRef.push();
-                String itemId = newRef.getKey();
+            Firebase newRef = itemsRef.push();
+            String itemId = newRef.getKey();
 
-                SubTaskOrMaterial subTaskOrMaterial = new SubTaskOrMaterial(nameText.getText().toString(), spinner.getSelectedItemPosition(), false);
-                HashMap<String, Object> itemToAdd =
-                        (HashMap<String, Object>) new ObjectMapper().convertValue(subTaskOrMaterial, Map.class);
+            SubTaskOrMaterial subTaskOrMaterial = new SubTaskOrMaterial(nameText.getText().toString(), spinner.getSelectedItemPosition(), false);
+            HashMap<String, Object> itemToAdd =
+                    (HashMap<String, Object>) new ObjectMapper().convertValue(subTaskOrMaterial, Map.class);
 
-                updatedIteimToAddMap.put("/" + Constants.FIREBASE_LOCATION_SUBTASKS + "/" +
-                        mListId + "/" + itemId, itemToAdd);
+            updatedIteimToAddMap.put("/" + Constants.FIREBASE_LOCATION_SUBTASKS + "/" +
+                    mListId + "/" + itemId, itemToAdd);
 
-                firebaseRef.updateChildren(updatedIteimToAddMap);
-            } else {
-                TaskDbHelper dbHelper = new TaskDbHelper(getContext());
-                SQLiteDatabase db = dbHelper.getWritableDatabase();
+            firebaseRef.updateChildren(updatedIteimToAddMap);
+
+            if (spinner.getSelectedItemPosition() == 1) {
                 ContentValues values = new ContentValues();
                 values.put("task_id", mListId);
                 values.put("name", nameText.getText().toString());
                 values.put("checked", 0);
-                db.insert(TaskContract.MaterialEntry.TABLE_NAME, null, values);
+                getContext().getContentResolver().insert(TaskContract.MaterialEntry.CONTENT_URI, values);
             }
-
 
             AddTaskOrMaterialDialog.this.getDialog().cancel();
         }

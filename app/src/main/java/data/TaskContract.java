@@ -25,7 +25,7 @@ public class TaskContract {
         public static final String CONTENT_ITEM_TYPE =
                 ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_MATERIAL;
 
-        public static final String TABLE_NAME = "materials";
+        public static final String TABLE_NAME = "material";
 
         public static final String COLUMN_ID = "_id";
         public static final String COLUMN_TASK_ID = "task_id";

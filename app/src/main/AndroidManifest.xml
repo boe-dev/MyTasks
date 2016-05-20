@@ -33,6 +33,12 @@
 
         <activity android:name=".ui.taskDetail.TaskDetailActivity" />
 
+        <provider
+            android:authorities="@string/content_authority"
+            android:name="data.TaskProvider"
+            android:exported="false"
+            android:syncable="true" />
+
     </application>
 
 </manifest>

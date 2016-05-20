@@ -29,9 +29,11 @@ import utils.Constants;
 public class MaterialsFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private MaterialsAdapter mMaterialAdapter;
+    private ListView materialList;
     // private Uri mUri = Uri.parse("content://de.boe_dev.mytasks/material/100");
     private Uri mUri = TaskContract.MaterialEntry.CONTENT_URI;
 
+    private static final int DETAIL_LOADER = 0;
     private static final String[] DETAIL_COLUMNS = {
             TaskContract.MaterialEntry.TABLE_NAME + "." + TaskContract.MaterialEntry.COLUMN_ID,
             TaskContract.MaterialEntry.COLUMN_TASK_ID,
@@ -61,11 +63,23 @@ public class MaterialsFragment extends Fragment implements LoaderManager.LoaderC
         ButterKnife.bind(getActivity());
 
 //        Firebase ref = new Firebase(Constants.FIREBASE_URL_SUBTASKS);
-//        mMaterialAdapter = new MaterialsAdapter(getActivity(), SubTaskOrMaterial.class, R.layout.item_materials, ref);
-//        ListView materialList = (ListView) rootview.findViewById(R.id.list_view_materials);
-//        materialList.setAdapter(mMaterialAdapter);
+        mMaterialAdapter = new MaterialsAdapter(getActivity(), null, 0);
+        materialList = (ListView) rootview.findViewById(R.id.list_view_materials);
+        materialList.setAdapter(mMaterialAdapter);
 
         return rootview;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        getLoaderManager().initLoader(DETAIL_LOADER, null, this);
+        super.onActivityCreated(savedInstanceState);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getLoaderManager().restartLoader(0, null, this);
     }
 
     @Override
@@ -94,15 +108,11 @@ public class MaterialsFragment extends Fragment implements LoaderManager.LoaderC
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        if (data != null && data.moveToFirst()) {
-            do {
-                Log.v("MaterialFragment, ", data.getString(2));
-            } while (data.moveToNext());
-        }
+        mMaterialAdapter.swapCursor(data);
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-
+        mMaterialAdapter.swapCursor(null);
     }
 }
