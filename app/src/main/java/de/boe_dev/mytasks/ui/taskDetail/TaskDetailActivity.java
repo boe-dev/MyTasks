@@ -84,10 +84,6 @@ public class TaskDetailActivity extends BaseActivity implements OnMapReadyCallba
         mTaskDetailItemAdapter = new TaskDetailItemAdapter(this, SubTaskOrMaterial.class, R.layout.item_materials, listItemsRfef, mTaskId);
         mListView.setAdapter(mTaskDetailItemAdapter);
 
-
-
-
-
     }
 
     public void showAddTaskOrMaterialDialog(View view) {

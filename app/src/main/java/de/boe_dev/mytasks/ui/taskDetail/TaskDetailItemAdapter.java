@@ -7,6 +7,7 @@ import android.widget.TextView;
 
 import com.firebase.client.Query;
 import com.firebase.ui.FirebaseListAdapter;
+import com.firebase.ui.FirebaseRecyclerViewAdapter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -16,7 +17,7 @@ import model.SubTaskOrMaterial;
 /**
  * Created by benny on 06.05.16.
  */
-public class TaskDetailItemAdapter extends FirebaseListAdapter<SubTaskOrMaterial> {
+public class TaskDetailItemAdapter extends FirebaseListAdapter <SubTaskOrMaterial> {
 
     private SubTaskOrMaterial subTaskOrMaterial;
     private String mListId;
