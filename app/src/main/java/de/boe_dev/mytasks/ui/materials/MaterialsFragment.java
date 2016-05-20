@@ -1,8 +1,14 @@
 package de.boe_dev.mytasks.ui.materials;
 
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +17,8 @@ import android.widget.ListView;
 import com.firebase.client.Firebase;
 
 import butterknife.ButterKnife;
+import data.TaskContract;
+import data.TaskProvider;
 import de.boe_dev.mytasks.R;
 import model.SubTaskOrMaterial;
 import utils.Constants;
@@ -18,9 +26,21 @@ import utils.Constants;
 /**
  * Created by benny on 03.05.16.
  */
-public class MaterialsFragment extends Fragment {
+public class MaterialsFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private MaterialsAdapter mMaterialAdapter;
+    // private Uri mUri = Uri.parse("content://de.boe_dev.mytasks/material/100");
+    private Uri mUri = TaskContract.MaterialEntry.CONTENT_URI;
+
+    private static final String[] DETAIL_COLUMNS = {
+            TaskContract.MaterialEntry.TABLE_NAME + "." + TaskContract.MaterialEntry.COLUMN_ID,
+            TaskContract.MaterialEntry.COLUMN_TASK_ID,
+            TaskContract.MaterialEntry.COLUMN_NAME,
+            TaskContract.MaterialEntry.COLUMN_CHECKED
+    };
+
+
+
 
     //@BindView(R.id.list_view_materials) ListView materialList;
 
@@ -52,5 +72,37 @@ public class MaterialsFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
 //        mMaterialAdapter.cleanup();
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        if ( null != mUri ) {
+            // Now create and return a CursorLoader that will take care of
+            // creating a Cursor for the data being displayed.
+            return new CursorLoader(
+                    getActivity(),
+                    mUri,
+                    DETAIL_COLUMNS,
+                    null,
+                    null,
+                    null
+            );
+        }
+
+        return null;
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        if (data != null && data.moveToFirst()) {
+            do {
+                Log.v("MaterialFragment, ", data.getString(2));
+            } while (data.moveToNext());
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
     }
 }
