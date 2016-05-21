@@ -39,6 +39,19 @@
             android:exported="false"
             android:syncable="true" />
 
+        <receiver
+            android:name="widget.TaskWidgetProvider"
+            android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="android.appwidget.action.APPWIDGET_REFRESH" />
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider"
+                android:resource="@xml/task_widget_provider_info" />
+        </receiver>
+
+        <service android:name="widget.TaskCollectionWidgetService" android:permission="android.permission.BIND_REMOTEVIEWS"/>
+
     </application>
 
 </manifest>

@@ -30,6 +30,7 @@ import utils.Constants;
 
 public class MainActivity extends BaseActivity {
 
+    public static final String TASK_DETAIL = "de.boe_dev.mainactivity.TASK_DETAIL";
     private static final String LOG_TAG = "MainActivity";
     private Firebase mUserRef;
     private ValueEventListener mUserRefListener;

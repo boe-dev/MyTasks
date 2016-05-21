@@ -26,6 +26,10 @@ public class Task {
         return listName;
     }
 
+    public void setListName(String listName) {
+        this.listName = listName;
+    }
+
     public String getCreatedUser() {
         return createdUser;
     }
