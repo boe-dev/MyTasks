@@ -38,11 +38,11 @@ public class TaskWidgetProvider extends AppWidgetProvider {
         for (int appWidgetId : appWidgetIds) {
             Intent intent = new Intent(context, TaskCollectionWidgetService.class);
             intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetId);
+            intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
             intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
             RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.widget_tasks);
             rv.setRemoteAdapter(R.id.widget_list, intent);
             appWidgetManager.updateAppWidget(appWidgetId, rv);
-
         }
     }
 }

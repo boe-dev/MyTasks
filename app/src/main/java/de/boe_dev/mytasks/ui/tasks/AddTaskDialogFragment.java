@@ -2,6 +2,8 @@ package de.boe_dev.mytasks.ui.tasks;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.location.Address;
@@ -26,6 +28,7 @@ import data.TaskContract;
 import de.boe_dev.mytasks.R;
 import model.Task;
 import utils.Constants;
+import widget.TaskWidgetProvider;
 
 /**
  * Created by ben on 05.05.16.
@@ -118,6 +121,11 @@ public class AddTaskDialogFragment extends DialogFragment {
             values.put("task_id", newListRef.getKey());
             values.put("name", userEnteredTaskName);
             getContext().getContentResolver().insert(TaskContract.TaskEntry.CONTENT_URI, values);
+
+            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(getContext());
+            ComponentName thisWidget = new ComponentName(getContext(), TaskWidgetProvider.class);
+            int[] appWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget);
+            appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.widget_list);
 
             AddTaskDialogFragment.this.getDialog().cancel();
 

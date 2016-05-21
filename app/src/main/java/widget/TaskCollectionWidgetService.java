@@ -3,17 +3,15 @@ package widget;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.os.Bundle;
 import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
-import com.firebase.client.DataSnapshot;
-import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
-
 import java.util.ArrayList;
 
+import data.TaskContract;
 import de.boe_dev.mytasks.R;
 import model.Task;
 import utils.Constants;
@@ -44,33 +42,14 @@ public class TaskCollectionWidgetService extends RemoteViewsService {
         public void onCreate() {
             taskList = new ArrayList<>();
 
-
-            for (int i = 0; i < 5; i++) {
-                Task task = new Task();
-                task.setListName("name " + i);
-                taskList.add(task);
+            Cursor cursor = getContentResolver().query(TaskContract.TaskEntry.CONTENT_URI, null, null, null, null);
+            if (cursor.moveToFirst()) {
+                do {
+                    Task task = new Task();
+                    task.setListName(cursor.getString(2));
+                    taskList.add(task);
+                } while (cursor.moveToNext());
             }
-
-            Firebase firebase = new Firebase(Constants.FIREBASE_URL_TASKS);
-            firebase.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
-                        Task user = userSnapshot.getValue(Task.class);
-                        Log.v("test", "" + user.getListName());
-                        if (user != null) {
-                            taskList.add(user);
-                        }
-                    }
-                }
-
-                @Override
-                public void onCancelled(FirebaseError firebaseError) {
-
-                }
-            });
-
-
         }
 
         @Override
