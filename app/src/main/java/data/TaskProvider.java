@@ -18,11 +18,13 @@ public class TaskProvider extends ContentProvider {
     private TaskDbHelper mOpenHelper;
 
     static final int MATERIAL = 100;
+    static final int TASKS = 200;
 
     static UriMatcher buildUriMatcher() {
         final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
         final String authority = TaskContract.CONTENT_AUTHORITY;
         matcher.addURI(authority, TaskContract.PATH_MATERIAL, MATERIAL);
+        matcher.addURI(authority, TaskContract.PATH_TASK, TASKS);
         return matcher;
     }
 
@@ -37,15 +39,31 @@ public class TaskProvider extends ContentProvider {
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         Cursor retCursor = null;
 
-        if (sUriMatcher.match(uri) == MATERIAL) {
-            retCursor = mOpenHelper.getReadableDatabase().query(
-                    TaskContract.MaterialEntry.TABLE_NAME,
-                    projection,
-                    selection,
-                    selectionArgs,
-                    null,
-                    null,
-                    sortOrder);
+        int match = sUriMatcher.match(uri);
+        switch (match) {
+            case MATERIAL: {
+                retCursor = mOpenHelper.getReadableDatabase().query(
+                        TaskContract.MaterialEntry.TABLE_NAME,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder);
+                break;
+            }
+
+            case TASKS: {
+                retCursor = mOpenHelper.getReadableDatabase().query(
+                        TaskContract.TaskEntry.TABLE_NAME,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder);
+                break;
+            }
         }
 
         return retCursor;
@@ -54,8 +72,16 @@ public class TaskProvider extends ContentProvider {
     @Nullable
     @Override
     public String getType(Uri uri) {
-        if (sUriMatcher.match(uri) == MATERIAL) {
-            return TaskContract.MaterialEntry.CONTENT_TYPE;
+
+        int match = sUriMatcher.match(uri);
+        switch (match) {
+            case MATERIAL: {
+                return TaskContract.MaterialEntry.CONTENT_TYPE;
+            }
+
+            case TASKS: {
+                return TaskContract.TaskEntry.CONTENT_TYPE;
+            }
         }
         return null;
     }
@@ -67,12 +93,22 @@ public class TaskProvider extends ContentProvider {
         final int match = sUriMatcher.match(uri);
         Uri returnUri = null;
 
-        if (match == MATERIAL) {
-            long _id = db.insert(TaskContract.MaterialEntry.TABLE_NAME, null, values);
-            if ( _id > 0 )
-                returnUri = TaskContract.MaterialEntry.buildMaterialUri(_id);
-            else
-                throw new android.database.SQLException("Failed to insert row into " + uri);
+        switch (match) {
+            case MATERIAL: {
+                long _id = db.insert(TaskContract.MaterialEntry.TABLE_NAME, null, values);
+                if (_id > 0)
+                    returnUri = TaskContract.MaterialEntry.buildMaterialUri(_id);
+                break;
+                }
+
+
+            case TASKS: {
+                long _id = db.insert(TaskContract.TaskEntry.TABLE_NAME, null, values);
+                if (_id > 0)
+                    returnUri = TaskContract.TaskEntry.buildMaterialUri(_id);
+                break;
+            }
+
         }
         return returnUri;
     }
@@ -83,8 +119,17 @@ public class TaskProvider extends ContentProvider {
         int rowsDeleted = 0;
         if ( null == selection ) selection = "1";
 
-        if (sUriMatcher.match(uri) == MATERIAL) {
-            rowsDeleted = db.delete(TaskContract.MaterialEntry.TABLE_NAME, selection, selectionArgs);
+        int match = sUriMatcher.match(uri);
+        switch (match) {
+            case MATERIAL: {
+                rowsDeleted = db.delete(TaskContract.MaterialEntry.TABLE_NAME, selection, selectionArgs);
+                break;
+            }
+
+            case TASKS: {
+                rowsDeleted = db.delete(TaskContract.TaskEntry.TABLE_NAME, selection, selectionArgs);
+                break;
+            }
         }
 
         if (rowsDeleted != 0) {
@@ -98,10 +143,20 @@ public class TaskProvider extends ContentProvider {
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         int rowsUpdated = 0;
+        int match = sUriMatcher.match(uri);
 
-        if (sUriMatcher.match(uri) == MATERIAL) {
-            rowsUpdated = db.update(TaskContract.MaterialEntry.TABLE_NAME, values, selection,
-                    selectionArgs);
+        switch (match) {
+            case MATERIAL: {
+                rowsUpdated = db.update(TaskContract.MaterialEntry.TABLE_NAME, values, selection,
+                        selectionArgs);
+                break;
+            }
+
+            case TASKS: {
+                rowsUpdated = db.update(TaskContract.TaskEntry.TABLE_NAME, values, selection,
+                        selectionArgs);
+                break;
+            }
         }
 
         if (rowsUpdated != 0) {

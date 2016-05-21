@@ -3,13 +3,20 @@ package widget;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
+
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 
 import java.util.ArrayList;
 
 import de.boe_dev.mytasks.R;
 import model.Task;
+import utils.Constants;
 
 /**
  * Created by ben on 21.05.16.
@@ -27,7 +34,7 @@ public class TaskCollectionWidgetService extends RemoteViewsService {
     class ListRemoteViewsFactory implements RemoteViewsFactory {
 
         private Context context;
-        private ArrayList<Task> taskList;
+        public ArrayList<Task> taskList;
 
         public ListRemoteViewsFactory(Context context, Intent intent) {
             this.context = context;
@@ -37,11 +44,31 @@ public class TaskCollectionWidgetService extends RemoteViewsService {
         public void onCreate() {
             taskList = new ArrayList<>();
 
+
             for (int i = 0; i < 5; i++) {
                 Task task = new Task();
                 task.setListName("name " + i);
                 taskList.add(task);
             }
+
+            Firebase firebase = new Firebase(Constants.FIREBASE_URL_TASKS);
+            firebase.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                        Task user = userSnapshot.getValue(Task.class);
+                        Log.v("test", "" + user.getListName());
+                        if (user != null) {
+                            taskList.add(user);
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(FirebaseError firebaseError) {
+
+                }
+            });
 
 
         }

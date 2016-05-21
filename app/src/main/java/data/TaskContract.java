@@ -15,6 +15,7 @@ public class TaskContract {
 
 
     public static final String PATH_MATERIAL = "material";
+    public static final String PATH_TASK = "task";
 
     public static final class MaterialEntry implements BaseColumns {
 
@@ -31,6 +32,27 @@ public class TaskContract {
         public static final String COLUMN_TASK_ID = "task_id";
         public static final String COLUMN_NAME = "name";
         public static final String COLUMN_CHECKED = "checked";
+
+        public static Uri buildMaterialUri(long id) {
+            return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
+
+    }
+
+    public static final class TaskEntry implements BaseColumns {
+
+        public static final Uri CONTENT_URI =
+                BASE_CONTENT_URI.buildUpon().appendPath(PATH_TASK).build();
+        public static final String CONTENT_TYPE =
+                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_TASK;
+        public static final String CONTENT_ITEM_TYPE =
+                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_TASK;
+
+        public static final String TABLE_NAME = "task";
+
+        public static final String COLUMN_ID = "_id";
+        public static final String COLUMN_TASK_ID = "task_id";
+        public static final String COLUMN_NAME = "name";
 
         public static Uri buildMaterialUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);

@@ -2,6 +2,7 @@ package de.boe_dev.mytasks.ui.tasks;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.location.Address;
 import android.location.Geocoder;
@@ -21,6 +22,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
+import data.TaskContract;
 import de.boe_dev.mytasks.R;
 import model.Task;
 import utils.Constants;
@@ -111,6 +113,11 @@ public class AddTaskDialogFragment extends DialogFragment {
             Task task = new Task(userEnteredTaskName, createdUser, latitude, longitude, timestampCreated);
 
             newListRef.setValue(task);
+
+            ContentValues values = new ContentValues();
+            values.put("task_id", newListRef.getKey());
+            values.put("name", userEnteredTaskName);
+            getContext().getContentResolver().insert(TaskContract.TaskEntry.CONTENT_URI, values);
 
             AddTaskDialogFragment.this.getDialog().cancel();
 

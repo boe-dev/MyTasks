@@ -11,6 +11,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.boe_dev.mytasks.R;
 import model.Task;
+import widget.TaskCollectionWidgetService;
 
 /**
  * Created by ben on 05.05.16.
