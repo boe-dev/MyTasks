@@ -1,4 +1,4 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
@@ -13,14 +13,20 @@
         android:layout_height="wrap_content"
         android:hint="@string/task_name"
         android:imeOptions="actionDone|flagNoExtractUi"
-        android:inputType="text"/>
+        android:inputType="textCapWords"
+        android:nextFocusDown="@+id/add_task_address"
+        android:textColor="@color/dark_grey"
+        android:textColorHint="@color/grey"/>
 
     <EditText
         android:id="@+id/add_task_address"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/add_task_name"
         android:hint="@string/address"
         android:imeOptions="actionDone|flagNoExtractUi"
-        android:inputType="text"/>
+        android:inputType="textCapWords"
+        android:textColor="@color/dark_grey"
+        android:textColorHint="@color/grey"/>
 
-</LinearLayout>
+</RelativeLayout>
