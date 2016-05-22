@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
@@ -52,6 +53,17 @@ public class TaskDetailActivity extends BaseActivity implements OnMapReadyCallba
         ButterKnife.bind(this);
         Intent intent = this.getIntent();
         mTaskId = intent.getStringExtra(Constants.KEY_LIST_ID);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+                return;
+            }
+        });
         if (mTaskId == null) {
             finish();
             return;
@@ -64,6 +76,7 @@ public class TaskDetailActivity extends BaseActivity implements OnMapReadyCallba
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Task task = dataSnapshot.getValue(Task.class);
+                setTitle(task.getListName());
                 latitude = task.getLatitude();
                 longitude = task.getLongitude();
                 if (latitude != 0.0 && longitude != 0.0) {
