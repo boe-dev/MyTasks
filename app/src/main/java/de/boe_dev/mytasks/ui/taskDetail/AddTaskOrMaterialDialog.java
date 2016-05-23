@@ -63,8 +63,8 @@ public class AddTaskOrMaterialDialog extends DialogFragment {
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View rootView = inflater.inflate(mResource, null);
         spinner = (Spinner) rootView.findViewById(R.id.sub_task_or_material_spinner);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), R.layout.spinner_item, getResources().getStringArray(R.array.task_spinner));
-        spinner.setAdapter(adapter);
+//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), R.layout.spinner_item, getResources().getStringArray(R.array.task_spinner));
+//        spinner.setAdapter(adapter);
 
         nameText = (EditText) rootView.findViewById(R.id.sub_task_or_material_desc);
 

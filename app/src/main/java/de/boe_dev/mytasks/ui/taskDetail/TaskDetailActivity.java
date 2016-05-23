@@ -7,6 +7,8 @@ import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 
@@ -42,12 +44,13 @@ public class TaskDetailActivity extends BaseActivity implements OnMapReadyCallba
     private SupportMapFragment mapFragment;
     private UiSettings uiSettings;
     private TaskDetailItemAdapter mTaskDetailItemAdapter;
+    private ValueEventListener mTaskEventListener;
     private Firebase mRef;
     private String mTaskId;
     private double latitude, longitude = 0.0;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_task);
         ButterKnife.bind(this);
@@ -72,10 +75,15 @@ public class TaskDetailActivity extends BaseActivity implements OnMapReadyCallba
         mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
 
         mRef = new Firebase(Constants.FIREBASE_URL_TASKS).child(mTaskId);
-        mRef.addValueEventListener(new ValueEventListener() {
+        mTaskEventListener = mRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+
                 Task task = dataSnapshot.getValue(Task.class);
+                if (task == null) {
+                    finish();
+                    return;
+                }
                 setTitle(task.getListName());
                 latitude = task.getLatitude();
                 longitude = task.getLongitude();
@@ -84,6 +92,7 @@ public class TaskDetailActivity extends BaseActivity implements OnMapReadyCallba
                 } else {
                     mapFragment.getView().setVisibility(View.GONE);
                 }
+
             }
 
             @Override
@@ -99,9 +108,43 @@ public class TaskDetailActivity extends BaseActivity implements OnMapReadyCallba
 
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_task_detail, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.action_remove_task:
+                removeTask();
+                return true;
+
+            case R.id.action_edit_task:
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mTaskDetailItemAdapter.cleanup();
+        mRef.removeEventListener(mTaskEventListener);
+
+    }
+
     public void showAddTaskOrMaterialDialog(View view) {
         DialogFragment dialog = AddTaskOrMaterialDialog.newInstance(mTaskId);
         dialog.show(this.getSupportFragmentManager(), getApplicationContext().getResources().getString(R.string.add_task_or_material_dialog));
+    }
+
+    private void removeTask() {
+        DialogFragment dialogFragment = RemoveTaskDialogFragment.newInstance(mTaskId);
+        dialogFragment.show(getSupportFragmentManager(), "RemoveTaskDialogFragment");
     }
 
 
