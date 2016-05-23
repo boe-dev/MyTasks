@@ -29,7 +29,7 @@ public class RemoveTaskDialogFragment extends DialogFragment {
     public static RemoveTaskDialogFragment newInstance(String taskId) {
         RemoveTaskDialogFragment removeTaskDialogFragment = new RemoveTaskDialogFragment();
         Bundle bundle = new Bundle();
-        bundle.putString(Constants.KEY_LIST_ID, taskId);
+        bundle.putString(Constants.KEY_TASK_ID, taskId);
         removeTaskDialogFragment.setArguments(bundle);
         return removeTaskDialogFragment;
     }
@@ -37,7 +37,7 @@ public class RemoveTaskDialogFragment extends DialogFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mTaskId = getArguments().getString(Constants.KEY_LIST_ID);
+        mTaskId = getArguments().getString(Constants.KEY_TASK_ID);
     }
 
     @NonNull

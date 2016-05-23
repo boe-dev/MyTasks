@@ -3,14 +3,12 @@ package de.boe_dev.mytasks.ui.taskDetail;
 import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 
@@ -21,10 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import data.TaskContract;
-import data.TaskDbHelper;
-import data.TaskProvider;
 import de.boe_dev.mytasks.R;
-import de.boe_dev.mytasks.ui.materials.MaterialsFragment;
 import model.SubTaskOrMaterial;
 import utils.Constants;
 
@@ -42,7 +37,7 @@ public class AddTaskOrMaterialDialog extends DialogFragment {
 
         AddTaskOrMaterialDialog addTaskOrMaterialDialog = new AddTaskOrMaterialDialog();
         Bundle bundle = new Bundle();
-        bundle.putString(Constants.KEY_LIST_ID, listId);
+        bundle.putString(Constants.KEY_TASK_ID, listId);
         bundle.putInt(Constants.KEY_LAYOUT_RESOURCE, R.layout.dialog_add_sub_task_or_material);
         addTaskOrMaterialDialog.setArguments(bundle);
         return addTaskOrMaterialDialog;
@@ -51,7 +46,7 @@ public class AddTaskOrMaterialDialog extends DialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mListId = getArguments().getString(Constants.KEY_LIST_ID);
+        mListId = getArguments().getString(Constants.KEY_TASK_ID);
         mResource = getArguments().getInt(Constants.KEY_LAYOUT_RESOURCE);
     }
 

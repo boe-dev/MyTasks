@@ -1,14 +1,10 @@
 package de.boe_dev.mytasks.ui.taskDetail;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,12 +17,10 @@ import com.firebase.client.ValueEventListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.boe_dev.mytasks.R;
 import model.SubTaskOrMaterial;
@@ -53,8 +47,8 @@ public class TaskDetailFragment extends Fragment implements OnMapReadyCallback {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ButterKnife.bind(getActivity());
-        if (getArguments().containsKey(Constants.KEY_LIST_ID)) {
-            mTaskId = getArguments().getString(Constants.KEY_LIST_ID);
+        if (getArguments().containsKey(Constants.KEY_TASK_ID)) {
+            mTaskId = getArguments().getString(Constants.KEY_TASK_ID);
         }
         //mapFragment = (SupportMapFragment) this.getFragmentManager().findFragmentById(R.id.map);
     }

@@ -2,11 +2,8 @@ package de.boe_dev.mytasks.ui.taskDetail;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,8 +20,6 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -47,6 +42,7 @@ public class TaskDetailActivity extends BaseActivity implements OnMapReadyCallba
     private ValueEventListener mTaskEventListener;
     private Firebase mRef;
     private String mTaskId;
+    private Task mTask;
     private double latitude, longitude = 0.0;
 
     @Override
@@ -55,7 +51,7 @@ public class TaskDetailActivity extends BaseActivity implements OnMapReadyCallba
         setContentView(R.layout.activity_detail_task);
         ButterKnife.bind(this);
         Intent intent = this.getIntent();
-        mTaskId = intent.getStringExtra(Constants.KEY_LIST_ID);
+        mTaskId = intent.getStringExtra(Constants.KEY_TASK_ID);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -79,14 +75,14 @@ public class TaskDetailActivity extends BaseActivity implements OnMapReadyCallba
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                Task task = dataSnapshot.getValue(Task.class);
-                if (task == null) {
+                mTask = dataSnapshot.getValue(Task.class);
+                if (mTask == null) {
                     finish();
                     return;
                 }
-                setTitle(task.getListName());
-                latitude = task.getLatitude();
-                longitude = task.getLongitude();
+                setTitle(mTask.getListName());
+                latitude = mTask.getLatitude();
+                longitude = mTask.getLongitude();
                 if (latitude != 0.0 && longitude != 0.0) {
                     mapFragment.getMapAsync(TaskDetailActivity.this);
                 } else {
@@ -123,7 +119,8 @@ public class TaskDetailActivity extends BaseActivity implements OnMapReadyCallba
                 return true;
 
             case R.id.action_edit_task:
-                break;
+                editTask();
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -145,6 +142,11 @@ public class TaskDetailActivity extends BaseActivity implements OnMapReadyCallba
     private void removeTask() {
         DialogFragment dialogFragment = RemoveTaskDialogFragment.newInstance(mTaskId);
         dialogFragment.show(getSupportFragmentManager(), "RemoveTaskDialogFragment");
+    }
+
+    private void editTask() {
+        DialogFragment dialogFragment = EditTaskNameDialog.newInstance(mTask, mTaskId);
+        dialogFragment.show(this.getSupportFragmentManager(), "EditTaskNameDialog");
     }
 
 

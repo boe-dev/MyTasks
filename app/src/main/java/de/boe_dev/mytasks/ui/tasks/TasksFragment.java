@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -64,7 +63,7 @@ public class TasksFragment extends Fragment {
                     String listId = mTasksAdapter.getRef(position).getKey();
                     if (mTwoPane) {
                         Bundle arguments = new Bundle();
-                        arguments.putString(Constants.KEY_LIST_ID, listId);
+                        arguments.putString(Constants.KEY_TASK_ID, listId);
                         TaskDetailFragment fragment = new TaskDetailFragment();
                         fragment.setArguments(arguments);
                         getFragmentManager().beginTransaction()
@@ -72,7 +71,7 @@ public class TasksFragment extends Fragment {
                                 .commit();
                     } else {
                         Intent intent = new Intent(getActivity(), TaskDetailActivity.class);
-                        intent.putExtra(Constants.KEY_LIST_ID, listId);
+                        intent.putExtra(Constants.KEY_TASK_ID, listId);
                         startActivity(intent);
                     }
                 }

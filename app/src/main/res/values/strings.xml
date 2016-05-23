@@ -40,6 +40,8 @@
     <string name="action_remove_task">Remove task</string>
     <string name="dialog_message_are_you_sure_remove_task">Are you sure you want to remove this task?</string>
     <string name="action_edit_task">Edit Task</string>
+    <string name="edit_name">Edit name</string>
+    <string name="cancel">Cancel</string>
 
     <string-array name="task_spinner">
         <item>Sub Task</item>
