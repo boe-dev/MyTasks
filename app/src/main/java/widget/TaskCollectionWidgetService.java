@@ -33,6 +33,7 @@ public class TaskCollectionWidgetService extends RemoteViewsService {
 
         private Context context;
         public ArrayList<Task> taskList;
+        private Cursor cursor;
 
         public ListRemoteViewsFactory(Context context, Intent intent) {
             this.context = context;
@@ -40,21 +41,20 @@ public class TaskCollectionWidgetService extends RemoteViewsService {
 
         @Override
         public void onCreate() {
-            taskList = new ArrayList<>();
-
-            Cursor cursor = getContentResolver().query(TaskContract.TaskEntry.CONTENT_URI, null, null, null, null);
-            if (cursor.moveToFirst()) {
-                do {
-                    Task task = new Task();
-                    task.setListName(cursor.getString(2));
-                    taskList.add(task);
-                } while (cursor.moveToNext());
+            Log.v("WidgetService", "onCreate()");
+            if (cursor != null) {
+                cursor.close();
             }
+            cursor = getContentResolver().query(TaskContract.TaskEntry.CONTENT_URI, null, null, null, null);
         }
 
         @Override
         public void onDataSetChanged() {
-
+            Log.v("WidgetService", "onDataSetChanged()");
+            if (cursor != null) {
+                cursor.close();
+            }
+            cursor = getContentResolver().query(TaskContract.TaskEntry.CONTENT_URI, null, null, null, null);
         }
 
         @Override
@@ -64,11 +64,23 @@ public class TaskCollectionWidgetService extends RemoteViewsService {
 
         @Override
         public int getCount() {
-            return taskList.size();
+            return cursor.getCount();
         }
 
         @Override
         public RemoteViews getViewAt(int position) {
+
+            Log.v("WidgetService", "getViewAt()");
+
+            taskList = new ArrayList<>();
+            if (cursor.moveToFirst()) {
+                do {
+                    Task task = new Task();
+                    task.setListName(cursor.getString(2));
+                    taskList.add(task);
+                } while (cursor.moveToNext());
+            }
+
             RemoteViews remote = new RemoteViews(context.getPackageName(), R.layout.widget_tasks_item);
             remote.setTextViewText(R.id.widget_item_text, taskList.get(position).getListName());
             return remote;

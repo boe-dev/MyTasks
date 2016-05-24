@@ -36,8 +36,8 @@
         <provider
             android:authorities="@string/content_authority"
             android:name="data.TaskProvider"
-            android:exported="false"
-            android:syncable="true" />
+            android:exported="true"
+            android:grantUriPermissions="true"/>
 
         <receiver
             android:name="widget.TaskWidgetProvider"
@@ -50,6 +50,7 @@
                 android:resource="@xml/task_widget_provider_info" />
         </receiver>
 
+        <service android:name="service.FetchService" />
         <service android:name="widget.TaskCollectionWidgetService" android:permission="android.permission.BIND_REMOTEVIEWS"/>
 
     </application>
