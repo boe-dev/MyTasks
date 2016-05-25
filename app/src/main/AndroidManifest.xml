@@ -50,7 +50,6 @@
                 android:resource="@xml/task_widget_provider_info" />
         </receiver>
 
-        <service android:name="service.FetchService" />
         <service android:name="widget.TaskCollectionWidgetService" android:permission="android.permission.BIND_REMOTEVIEWS"/>
 
     </application>

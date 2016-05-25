@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,6 +24,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnItemLongClick;
 import de.boe_dev.mytasks.R;
 import de.boe_dev.mytasks.ui.BaseActivity;
 import model.SubTaskOrMaterial;
@@ -115,11 +117,11 @@ public class TaskDetailActivity extends BaseActivity implements OnMapReadyCallba
 
         switch (item.getItemId()) {
             case R.id.action_remove_task:
-                removeTask();
+                showRemoveTaskDialog();
                 return true;
 
             case R.id.action_edit_task:
-                editTask();
+                showEditTaskDialog();
                 return true;
         }
 
@@ -134,19 +136,37 @@ public class TaskDetailActivity extends BaseActivity implements OnMapReadyCallba
 
     }
 
+    @OnItemLongClick(R.id.task_detail_list)
+    boolean editList(int pos) {
+        SubTaskOrMaterial subTaskOrMaterial = mTaskDetailItemAdapter.getItem(pos);
+        if (subTaskOrMaterial != null && subTaskOrMaterial.getType() == 0) {
+            String itemName = subTaskOrMaterial.getName();
+            String itemId = mTaskDetailItemAdapter.getRef(pos).getKey();
+            showEditListItemNameDialog(itemName, itemId);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public void showAddTaskOrMaterialDialog(View view) {
         DialogFragment dialog = AddTaskOrMaterialDialog.newInstance(mTaskId);
         dialog.show(this.getSupportFragmentManager(), getApplicationContext().getResources().getString(R.string.add_task_or_material_dialog));
     }
 
-    private void removeTask() {
+    private void showRemoveTaskDialog() {
         DialogFragment dialogFragment = RemoveTaskDialogFragment.newInstance(mTaskId);
         dialogFragment.show(getSupportFragmentManager(), "RemoveTaskDialogFragment");
     }
 
-    private void editTask() {
+    private void showEditTaskDialog() {
         DialogFragment dialogFragment = EditTaskNameDialog.newInstance(mTask, mTaskId);
         dialogFragment.show(this.getSupportFragmentManager(), "EditTaskNameDialog");
+    }
+
+    private void showEditListItemNameDialog(String itemName, String itemId) {
+        DialogFragment dialogFragment = EditTaskItemNameDialog.newInstance(itemName, itemId, mTaskId);
+        dialogFragment.show(this.getSupportFragmentManager(), "EditTaskItemNameDialog");
     }
 
 
