@@ -42,6 +42,9 @@
     <string name="action_edit_task">Edit Task</string>
     <string name="edit_name">Edit name</string>
     <string name="cancel">Cancel</string>
+    <string name="new_value">New</string>
+    <string name="edit">Edit</string>
+    <string name="remove">Remove</string>
 
     <string-array name="task_spinner">
         <item>Sub Task</item>

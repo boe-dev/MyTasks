@@ -10,12 +10,14 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -24,7 +26,6 @@ import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import butterknife.ButterKnife;
 import de.boe_dev.mytasks.R;
 import model.SubTaskOrMaterial;
 import model.Task;
@@ -35,22 +36,22 @@ import utils.Constants;
  */
 public class TaskDetailFragment extends Fragment implements OnMapReadyCallback {
 
-    //@BindView(R.id.task_detail_list)
     ListView mListView;
-    FloatingActionButton fab;
+    FloatingActionsMenu mFabMemu;
 
     private SupportMapFragment mapFragment;
     private UiSettings uiSettings;
     private FragmentManager fm;
     private TaskDetailItemAdapter mTaskDetailItemAdapter;
+    private ValueEventListener mTaskEventListener;
     private Firebase mRef;
+    private Task mTask;
     private String mTaskId;
     private double latitude, longitude = 0.0;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ButterKnife.bind(getActivity());
         if (getArguments().containsKey(Constants.KEY_TASK_ID)) {
             mTaskId = getArguments().getString(Constants.KEY_TASK_ID);
         }
@@ -67,26 +68,19 @@ public class TaskDetailFragment extends Fragment implements OnMapReadyCallback {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.activity_detail_task, container, false);
-        ButterKnife.bind(getActivity());
-
-        Toolbar toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
-        toolbar.setVisibility(View.GONE);
-        mListView = (ListView) rootView.findViewById(R.id.task_detail_list);
-        fab = (FloatingActionButton) rootView.findViewById(R.id.new_task_fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showAddTaskOrMaterialDialog(v);
-            }
-        });
+        initViews(rootView);
 
         mRef = new Firebase(Constants.FIREBASE_URL_TASKS).child(mTaskId);
-        mRef.addValueEventListener(new ValueEventListener() {
+        mTaskEventListener = mRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Task task = dataSnapshot.getValue(Task.class);
-                latitude = task.getLatitude();
-                longitude = task.getLongitude();
+                mTask = dataSnapshot.getValue(Task.class);
+                if (mTask == null) {
+                    getActivity().getSupportFragmentManager().popBackStack();
+                    return;
+                }
+                latitude = mTask.getLatitude();
+                longitude = mTask.getLongitude();
                 if (latitude != 0.0 && longitude != 0.0) {
                     mapFragment.getMapAsync(TaskDetailFragment.this);
                 } else {
@@ -100,20 +94,38 @@ public class TaskDetailFragment extends Fragment implements OnMapReadyCallback {
             }
         });
 
-        Firebase listItemsRfef = new Firebase(Constants.FIREBASE_URL_SUBTASKS).child(mTaskId);
-
-        mTaskDetailItemAdapter = new TaskDetailItemAdapter(getActivity(), SubTaskOrMaterial.class, R.layout.item_materials, listItemsRfef, mTaskId);
+        Firebase listItemsRef = new Firebase(Constants.FIREBASE_URL_SUBTASKS).child(mTaskId);
+        mTaskDetailItemAdapter = new TaskDetailItemAdapter(getActivity(), SubTaskOrMaterial.class, R.layout.item_materials, listItemsRef, mTaskId);
         mListView.setAdapter(mTaskDetailItemAdapter);
-
-
         return rootView;
     }
 
-    public void showAddTaskOrMaterialDialog(View view) {
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mTaskDetailItemAdapter.cleanup();
+        mRef.removeEventListener(mTaskEventListener);
+    }
+
+    public void showAddTaskOrMaterialDialog() {
         DialogFragment dialog = AddTaskOrMaterialDialog.newInstance(mTaskId);
         dialog.show(this.getFragmentManager(), getContext().getResources().getString(R.string.add_task_or_material_dialog));
     }
 
+    private void showRemoveTaskDialog() {
+        DialogFragment dialogFragment = RemoveTaskDialogFragment.newInstance(mTaskId);
+        dialogFragment.show(getFragmentManager(), "RemoveTaskDialogFragment");
+    }
+
+    private void showEditTaskDialog() {
+        DialogFragment dialogFragment = EditTaskNameDialog.newInstance(mTask, mTaskId);
+        dialogFragment.show(this.getFragmentManager(), "EditTaskNameDialog");
+    }
+
+    private void showEditListItemNameDialog(String itemName, String itemId) {
+        DialogFragment dialogFragment = EditTaskItemNameDialog.newInstance(itemName, itemId, mTaskId);
+        dialogFragment.show(this.getFragmentManager(), "EditTaskItemNameDialog");
+    }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -124,4 +136,49 @@ public class TaskDetailFragment extends Fragment implements OnMapReadyCallback {
         uiSettings.setZoomControlsEnabled(true);
     }
 
+    private void initViews(View rootView) {
+
+        mFabMemu = (FloatingActionsMenu) rootView.findViewById(R.id.fab_menu);
+        mListView = (ListView) rootView.findViewById(R.id.task_detail_list);
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                SubTaskOrMaterial subTaskOrMaterial = mTaskDetailItemAdapter.getItem(position);
+                if (subTaskOrMaterial != null && subTaskOrMaterial.getType() == 0) {
+                    String itemName = subTaskOrMaterial.getName();
+                    String itemId = mTaskDetailItemAdapter.getRef(position).getKey();
+                    showEditListItemNameDialog(itemName, itemId);
+                } else {
+                    return;
+                }
+            }
+        });
+        rootView.findViewById(R.id.fab_new).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showAddTaskOrMaterialDialog();
+                if(mFabMemu.isExpanded()) {
+                    mFabMemu.collapse();
+                }
+            }
+        });
+        rootView.findViewById(R.id.fab_edit).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showEditTaskDialog();
+                if(mFabMemu.isExpanded()) {
+                    mFabMemu.collapse();
+                }
+            }
+        });
+        rootView.findViewById(R.id.fab_remove).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showRemoveTaskDialog();
+                if(mFabMemu.isExpanded()) {
+                    mFabMemu.collapse();
+                }
+            }
+        });
+    }
 }

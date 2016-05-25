@@ -14,6 +14,7 @@ import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -24,6 +25,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.OnItemLongClick;
 import de.boe_dev.mytasks.R;
 import de.boe_dev.mytasks.ui.BaseActivity;
@@ -37,6 +39,7 @@ import utils.Constants;
 public class TaskDetailActivity extends BaseActivity implements OnMapReadyCallback {
 
     @BindView(R.id.task_detail_list) ListView mListView;
+    @BindView(R.id.fab_menu) FloatingActionsMenu mFabMemu;
 
     private SupportMapFragment mapFragment;
     private UiSettings uiSettings;
@@ -107,33 +110,10 @@ public class TaskDetailActivity extends BaseActivity implements OnMapReadyCallba
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_task_detail, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        switch (item.getItemId()) {
-            case R.id.action_remove_task:
-                showRemoveTaskDialog();
-                return true;
-
-            case R.id.action_edit_task:
-                showEditTaskDialog();
-                return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
     protected void onDestroy() {
         super.onDestroy();
         mTaskDetailItemAdapter.cleanup();
         mRef.removeEventListener(mTaskEventListener);
-
     }
 
     @OnItemLongClick(R.id.task_detail_list)
@@ -149,19 +129,28 @@ public class TaskDetailActivity extends BaseActivity implements OnMapReadyCallba
         }
     }
 
-    public void showAddTaskOrMaterialDialog(View view) {
+    @OnClick(R.id.fab_new) void showAddTaskOrMaterialDialog(View view) {
         DialogFragment dialog = AddTaskOrMaterialDialog.newInstance(mTaskId);
         dialog.show(this.getSupportFragmentManager(), getApplicationContext().getResources().getString(R.string.add_task_or_material_dialog));
+        if(mFabMemu.isExpanded()) {
+            mFabMemu.collapse();
+        }
     }
 
-    private void showRemoveTaskDialog() {
+    @OnClick(R.id.fab_remove) void showRemoveTaskDialog() {
         DialogFragment dialogFragment = RemoveTaskDialogFragment.newInstance(mTaskId);
         dialogFragment.show(getSupportFragmentManager(), "RemoveTaskDialogFragment");
+        if(mFabMemu.isExpanded()) {
+            mFabMemu.collapse();
+        }
     }
 
-    private void showEditTaskDialog() {
+    @OnClick(R.id.fab_edit) void showEditTaskDialog() {
         DialogFragment dialogFragment = EditTaskNameDialog.newInstance(mTask, mTaskId);
         dialogFragment.show(this.getSupportFragmentManager(), "EditTaskNameDialog");
+        if(mFabMemu.isExpanded()) {
+            mFabMemu.collapse();
+        }
     }
 
     private void showEditListItemNameDialog(String itemName, String itemId) {

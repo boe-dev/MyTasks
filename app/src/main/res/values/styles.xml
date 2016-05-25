@@ -32,5 +32,12 @@
     <style name="CustomTheme.Dialog" parent="Theme.AppCompat.Light.Dialog">
     </style>
 
+    <style name="menu_lables_style">
+        <item name="android:background">#55000000</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:padding">5dp</item>
+    </style>
+
 
 </resources>
