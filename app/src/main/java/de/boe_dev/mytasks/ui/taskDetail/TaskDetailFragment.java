@@ -5,6 +5,8 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +19,7 @@ import com.firebase.client.ValueEventListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -36,8 +39,9 @@ public class TaskDetailFragment extends Fragment implements OnMapReadyCallback {
     ListView mListView;
     FloatingActionButton fab;
 
-    //private SupportMapFragment mapFragment;
+    private SupportMapFragment mapFragment;
     private UiSettings uiSettings;
+    private FragmentManager fm;
     private TaskDetailItemAdapter mTaskDetailItemAdapter;
     private Firebase mRef;
     private String mTaskId;
@@ -50,7 +54,12 @@ public class TaskDetailFragment extends Fragment implements OnMapReadyCallback {
         if (getArguments().containsKey(Constants.KEY_TASK_ID)) {
             mTaskId = getArguments().getString(Constants.KEY_TASK_ID);
         }
-        //mapFragment = (SupportMapFragment) this.getFragmentManager().findFragmentById(R.id.map);
+        fm = getChildFragmentManager();
+        mapFragment = (SupportMapFragment) fm.findFragmentById(R.id.map);
+        if (mapFragment == null) {
+            mapFragment = SupportMapFragment.newInstance();
+            fm.beginTransaction().replace(R.id.map, mapFragment).commit();
+        }
     }
 
     @Nullable
@@ -60,6 +69,8 @@ public class TaskDetailFragment extends Fragment implements OnMapReadyCallback {
         View rootView = inflater.inflate(R.layout.activity_detail_task, container, false);
         ButterKnife.bind(getActivity());
 
+        Toolbar toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
+        toolbar.setVisibility(View.GONE);
         mListView = (ListView) rootView.findViewById(R.id.task_detail_list);
         fab = (FloatingActionButton) rootView.findViewById(R.id.new_task_fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -77,9 +88,9 @@ public class TaskDetailFragment extends Fragment implements OnMapReadyCallback {
                 latitude = task.getLatitude();
                 longitude = task.getLongitude();
                 if (latitude != 0.0 && longitude != 0.0) {
-                    //mapFragment.getMapAsync(TaskDetailFragment.this);
+                    mapFragment.getMapAsync(TaskDetailFragment.this);
                 } else {
-                    //mapFragment.getView().setVisibility(View.GONE);
+                    mapFragment.getView().setVisibility(View.GONE);
                 }
             }
 
