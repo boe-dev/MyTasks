@@ -67,7 +67,7 @@ public class TaskDetailFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.activity_detail_task, container, false);
+        final View rootView = inflater.inflate(R.layout.activity_detail_task, container, false);
         initViews(rootView);
 
         mRef = new Firebase(Constants.FIREBASE_URL_TASKS).child(mTaskId);
@@ -76,7 +76,8 @@ public class TaskDetailFragment extends Fragment implements OnMapReadyCallback {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 mTask = dataSnapshot.getValue(Task.class);
                 if (mTask == null) {
-                    getActivity().getSupportFragmentManager().popBackStack();
+                    // getActivity().getSupportFragmentManager().popBackStack();
+                    getFragmentManager().beginTransaction().remove(TaskDetailFragment.this).commit();
                     return;
                 }
                 latitude = mTask.getLatitude();
