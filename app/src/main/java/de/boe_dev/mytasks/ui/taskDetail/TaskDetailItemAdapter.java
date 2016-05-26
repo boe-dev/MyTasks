@@ -1,6 +1,8 @@
 package de.boe_dev.mytasks.ui.taskDetail;
 
 import android.app.Activity;
+import android.graphics.Color;
+import android.support.annotation.ColorRes;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.TextView;
@@ -40,11 +42,11 @@ public class TaskDetailItemAdapter extends FirebaseListAdapter <SubTaskOrMateria
     protected void populateView(View view, SubTaskOrMaterial item) {
 
         subTaskOrMaterialName = (TextView) view.findViewById(R.id.item_material_name);
-        checkBox = (CheckBox) view.findViewById(R.id.item_material_checkbox);
+        view.findViewById(R.id.item_material_checkbox).setVisibility(View.GONE);
 
         subTaskOrMaterialName.setText(item.getName());
         if (item.getType() == 1) {
-            checkBox.setVisibility(View.INVISIBLE);
+            view.setBackgroundColor(Color.parseColor("#11000000"));
         }
 
     }

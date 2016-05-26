@@ -6,5 +6,6 @@
 
     <color name="grey">#AEAEAE</color>
     <color name="dark_grey">#616161</color>
+    <color name="material_bg_color">#77FFFFFF</color>
 
 </resources>

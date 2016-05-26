@@ -62,6 +62,7 @@
             android:id="@+id/fab_remove"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            app:fab_icon="@drawable/icon_remove"
             app:fab_title="@string/remove"
             app:fab_colorNormal="#df4f39"
             app:fab_size="mini"/>
@@ -70,6 +71,7 @@
             android:id="@+id/fab_edit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            app:fab_icon="@drawable/icon_edit"
             app:fab_title="@string/edit"
             app:fab_colorNormal="#dfdc39"
             app:fab_size="mini"/>
