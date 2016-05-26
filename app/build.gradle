@@ -16,9 +16,9 @@ android {
     signingConfigs {
         relsase {
             storeFile file ('app.keystore');
-            storePassword System.getenv('KSTOREPWD')
-            keyAlias 'boe-dev'
-            keyPassword System.getenv('KEYPWD')
+            storePassword 'udacity'
+            keyAlias 'udacity'
+            keyPassword 'udacity'
         }
     }
     buildTypes {
