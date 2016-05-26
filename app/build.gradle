@@ -13,10 +13,19 @@ android {
         versionCode 1
         versionName "1.0"
     }
+    signingConfigs {
+        relsase {
+            storeFile file('/Users/benny/AndroidStudioProjects/MyTasks/app.keystore');
+            storePassword System.getenv('KSTOREPWD')
+            keyAlias 'boe-dev'
+            keyPassword System.getenv('KEYPWD')
+        }
+    }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.relsase
         }
     }
 
@@ -29,7 +38,6 @@ android {
         exclude 'META-INF/LICENSE-FIREBASE.txt'
         exclude 'META-INF/NOTICE'
     }
-
 }
 
 buildscript {
@@ -46,24 +54,24 @@ apply plugin: 'com.neenbedankt.android-apt'
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:23.1.1'
-    compile 'com.android.support:design:23.1.1'
-    compile 'com.android.support:support-v4:23.0.1'
 
     /* For Google Play Service */
-    compile 'com.google.android.gms:play-services-safetynet:8.3.0'
-    compile 'com.google.android.gms:play-services-auth:8.3.0'
 
-    compile 'com.google.android.gms:play-services-maps:8.3.0'
 
     /* Butterknife */
-    compile 'com.jakewharton:butterknife:8.0.1'
     apt 'com.jakewharton:butterknife-compiler:8.0.1'
 
     /* Firebase */
+
+
+compile
+    'com.android.support:appcompat-v7:24.0.0-beta1'compile
+    'com.android.support:design:24.0.0-beta1'compile
+    'com.android.support:support-v4:24.0.0-beta1'compile
+    'com.google.android.gms:play-services-safetynet:8.3.0'compile
+    'com.google.android.gms:play-services-auth:9.0.0'compile 'com.google.android.gms:play-services-maps:9.0.0'
+    compile 'com.jakewharton:butterknife:8.0.1'
     compile 'com.firebase:firebase-client-android:2.4.0'
     compile 'com.firebaseui:firebase-ui:0.2.2'
-
     compile 'com.getbase:floatingactionbutton:1.10.1'
-
 }
