@@ -15,7 +15,7 @@ android {
     }
     signingConfigs {
         relsase {
-            storeFile file ('/Users/benny/AndroidStudioProjects/MyTasks/app.keystore');
+            storeFile file ('app.keystore');
             storePassword System.getenv('KSTOREPWD')
             keyAlias 'boe-dev'
             keyPassword System.getenv('KEYPWD')
