@@ -15,7 +15,7 @@ android {
     }
     signingConfigs {
         relsase {
-            storeFile file ('app.keystore');
+            storeFile file ('task.keystore');
             storePassword 'udacity'
             keyAlias 'udacity'
             keyPassword 'udacity'
