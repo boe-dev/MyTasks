@@ -16,10 +16,14 @@ import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 
 import com.firebase.client.Firebase;
 import com.firebase.client.ServerValue;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.places.Places;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -29,14 +33,18 @@ import data.TaskContract;
 import de.boe_dev.mytasks.R;
 import model.Task;
 import utils.Constants;
+import utils.PlaceAutocompleteAdapter;
 import widget.TaskWidgetProvider;
 
 /**
  * Created by ben on 05.05.16.
  */
-public class AddTaskDialogFragment extends DialogFragment {
+public class AddTaskDialogFragment extends DialogFragment implements GoogleApiClient.OnConnectionFailedListener {
 
-    private EditText taskName,taskAddress;
+    protected GoogleApiClient mGoogleApiClient;
+    private PlaceAutocompleteAdapter mAdapter;
+    private EditText taskName;
+    private AutoCompleteTextView taskAddress;
     private String mEncodedEmail;
 
     public static AddTaskDialogFragment newInstance(String encodedEmail) {
@@ -64,11 +72,19 @@ public class AddTaskDialogFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
+        mGoogleApiClient = new GoogleApiClient.Builder(getContext())
+                .enableAutoManage(getActivity(), 10 /* clientId */, this)
+                .addApi(Places.GEO_DATA_API)
+                .build();
+
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.CustomTheme_Dialog);
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View rootView = inflater.inflate(R.layout.dialog_add_task, null);
         taskName = (EditText) rootView.findViewById(R.id.add_task_name);
-        taskAddress = (EditText) rootView.findViewById(R.id.add_task_address);
+        taskAddress = (AutoCompleteTextView) rootView.findViewById(R.id.add_task_address);
+
+        mAdapter = new PlaceAutocompleteAdapter(getContext(), mGoogleApiClient, null, null);
+        taskAddress.setAdapter(mAdapter);
 
 
         builder.setView(rootView).setPositiveButton(R.string.positiv_button_create, new DialogInterface.OnClickListener() {
@@ -136,6 +152,11 @@ public class AddTaskDialogFragment extends DialogFragment {
             AddTaskDialogFragment.this.getDialog().cancel();
 
         }
+
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
 
     }
 }
